@@ -3,31 +3,51 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\Downloader\DownloaderService;
-use App\Exceptions\InvalidTikTokUrlException;
+use App\Services\Downloader\Scrapers\TikTok\YtDlp\YtDlpProvider;
 
 class DownloadController extends Controller
 {
-    public function download(
-        Request $request,
-        DownloaderService $downloader
+    public function __construct(
+        private readonly YtDlpProvider $provider,
     ) {
-        $request->validate([
+    }
+
+    public function download(Request $request)
+    {
+        $validated = $request->validate([
             'url' => ['required', 'url'],
         ]);
 
-        try {
+        $url = $validated['url'];
 
-            $result = $downloader->download($request->url);
+        // Retrieve video metadata and the preferred download format.
+        $video = $this->provider->fetch($url);
 
-            return view('result', compact('result'));
+        $directory = storage_path('app/temp');
 
-        } catch (InvalidTikTokUrlException $e) {
-
-            return back()->withErrors([
-                'url' => $e->getMessage()
-            ]);
-
+        if (! is_dir($directory)) {
+            mkdir($directory, 0755, true);
         }
+
+        $tempPath = $directory . DIRECTORY_SEPARATOR . $video['filename'];
+
+        // Download the selected format (preferably H.264).
+        $this->provider->download(
+            url: $url,
+            outputPath: $tempPath,
+            formatId: $video['format_id'],
+        );
+
+        if (! file_exists($tempPath) || filesize($tempPath) === 0) {
+            abort(500, 'Video download failed.');
+        }
+
+        return response()->download(
+            file: $tempPath,
+            name: $video['filename'],
+            headers: [
+                'Content-Type' => 'video/mp4',
+            ]
+        )->deleteFileAfterSend(true);
     }
 }

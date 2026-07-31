@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'ytdlp' => [
+        'binary' => env(
+            'YTDLP_BINARY',
+            'yt-dlp'
+        ),
+    ],
+
 ];

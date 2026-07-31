@@ -52,35 +52,35 @@ class TikTokResolver
      * Follow redirects and return the final TikTok URL.
      */
     private function followRedirects(string $url): string
-{
-    $effectiveUrl = null;
+    {
+        $effectiveUrl = null;
 
-    $response = Http::withHeaders([
-            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
-            'Accept-Language' => 'en-US,en;q=0.9',
-        ])
-        ->timeout(15)
-        ->retry(2, 500)
-        ->withOptions([
-            'allow_redirects' => true,
-            'on_stats' => function (TransferStats $stats) use (&$effectiveUrl) {
-                $effectiveUrl = (string) $stats->getEffectiveUri();
-            },
-        ])
-        ->get($url);
+        $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+                'Accept-Language' => 'en-US,en;q=0.9',
+            ])
+            ->timeout(15)
+            ->retry(2, 500)
+            ->withOptions([
+                'allow_redirects' => true,
+                'on_stats' => function (TransferStats $stats) use (&$effectiveUrl) {
+                    $effectiveUrl = (string) $stats->getEffectiveUri();
+                },
+            ])
+            ->get($url);
 
-    if (! $response->successful()) {
-        throw new RuntimeException(
-            "Unable to resolve TikTok URL. HTTP {$response->status()}."
-        );
+        if (! $response->successful()) {
+            throw new RuntimeException(
+                "Unable to resolve TikTok URL. HTTP {$response->status()}."
+            );
+        }
+
+        if (empty($effectiveUrl)) {
+            throw new RuntimeException('Unable to determine the resolved TikTok URL.');
+        }
+
+        return $effectiveUrl;
     }
-
-    if (empty($effectiveUrl)) {
-        throw new RuntimeException('Unable to determine the resolved TikTok URL.');
-    }
-
-    return $effectiveUrl;
-}
 
     /**
      * Normalize the URL format.

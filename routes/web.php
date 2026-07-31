@@ -8,3 +8,4 @@ use App\Http\Controllers\DebugScraperController;
 Route::get('/', [HomeController::class, 'index']);
 Route::post('/download', [DownloadController::class, 'download'])->name('download');
 Route::get('/debug/scrape', DebugScraperController::class );
+Route::get('/debug/ytdlp', DebugScraperController::class);
