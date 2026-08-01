@@ -42,4 +42,12 @@ return [
         ),
     ],
 
+    'tikwm' => [
+
+        'base_url' => env('TIKWM_BASE_URL'),
+
+        'api_key' => env('TIKWM_API_KEY'),
+
+    ],
+
 ];

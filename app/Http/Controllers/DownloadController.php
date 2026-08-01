@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\Downloader\Scrapers\TikTok\YtDlp\YtDlpProvider;
+use App\Services\Downloader\TikTokVideoDownloader;
+use App\Services\Downloader\Providers\TikTok\TikTokProviderManager;
 
 class DownloadController extends Controller
 {
     public function __construct(
-        private readonly YtDlpProvider $provider,
+        private readonly TikTokProviderManager $provider,
+        private readonly TikTokVideoDownloader $downloader,
     ) {
     }
 
@@ -18,10 +20,9 @@ class DownloadController extends Controller
             'url' => ['required', 'url'],
         ]);
 
-        $url = $validated['url'];
-
-        // Retrieve video metadata and the preferred download format.
-        $video = $this->provider->fetch($url);
+        $video = $this->provider->fetch(
+            $validated['url']
+        );
 
         $directory = storage_path('app/temp');
 
@@ -29,22 +30,18 @@ class DownloadController extends Controller
             mkdir($directory, 0755, true);
         }
 
-        $tempPath = $directory . DIRECTORY_SEPARATOR . $video['filename'];
+        $tempPath = $directory
+            . DIRECTORY_SEPARATOR
+            . $video->filename;
 
-        // Download the selected format (preferably H.264).
-        $this->provider->download(
-            url: $url,
-            outputPath: $tempPath,
-            formatId: $video['format_id'],
+        $this->downloader->download(
+            $video,
+            $tempPath
         );
-
-        if (! file_exists($tempPath) || filesize($tempPath) === 0) {
-            abort(500, 'Video download failed.');
-        }
 
         return response()->download(
             file: $tempPath,
-            name: $video['filename'],
+            name: $video->filename,
             headers: [
                 'Content-Type' => 'video/mp4',
             ]
