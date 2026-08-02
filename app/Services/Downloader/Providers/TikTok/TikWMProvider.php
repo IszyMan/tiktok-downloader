@@ -97,7 +97,7 @@ class TikWMProvider implements TikTokProviderContract
 
             filename: sprintf(
                 '%s-%s.mp4',
-                config('downloader.filename_prefix'),
+                config('downloader.filename_prefix', 'tiktok'),
                 $data['id'] ?? time()
             ),
 

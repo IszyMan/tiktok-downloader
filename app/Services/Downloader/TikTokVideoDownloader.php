@@ -21,18 +21,20 @@ class TikTokVideoDownloader
     public function download(
         TikTokVideoData $video,
         string $outputPath,
+        string $type = 'hd',
     ): void {
 
         match ($video->provider) {
 
             'tikwm' => $this->downloadFromTikWM(
                 $video,
-                $outputPath
+                $outputPath,
+                $type,
             ),
 
             'ytdlp' => $this->downloadWithYtDlp(
                 $video,
-                $outputPath
+                $outputPath,
             ),
 
             default => throw new RuntimeException(
@@ -56,11 +58,13 @@ class TikTokVideoDownloader
     private function downloadFromTikWM(
         TikTokVideoData $video,
         string $outputPath,
+        string $type,
     ): void {
 
-        $url =
-            $video->downloads->playUrl
-            ?? $video->downloads->hdPlayUrl;
+        $url = $type === 'hd'
+            ? ($video->downloads->hdPlayUrl
+                ?? $video->downloads->playUrl)
+            : $video->downloads->watermarkUrl;
 
         if (! $url) {
             throw new RuntimeException(

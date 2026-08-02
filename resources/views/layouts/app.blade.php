@@ -11,7 +11,7 @@
     >
 
     <title>
-        TikTok Downloader
+        TikTok Downloader - Download TikTok Videos Without Watermark
     </title>
 
     @vite(['resources/css/app.css'])

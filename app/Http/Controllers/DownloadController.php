@@ -20,31 +20,37 @@ class DownloadController extends Controller
             'url' => ['required', 'url'],
         ]);
 
-        $video = $this->provider->fetch(
-            $validated['url']
-        );
+        $action = $request->input('action', 'preview');
 
-        $directory = storage_path('app/temp');
+        $video = $this->provider->fetch($validated['url']);
 
-        if (! is_dir($directory)) {
-            mkdir($directory, 0755, true);
+        // Preview
+        if ($action === 'preview') {
+
+            return view('home', [
+                'video' => $video,
+                'url'   => $validated['url'],
+            ]);
         }
 
-        $tempPath = $directory
-            . DIRECTORY_SEPARATOR
-            . $video->filename;
+        // Download
+        if (in_array($action, ['hd', 'watermark'])) {
 
-        $this->downloader->download(
-            $video,
-            $tempPath
-        );
+            $temp = storage_path(
+                'app/temp/' . $video->filename
+            );
 
-        return response()->download(
-            file: $tempPath,
-            name: $video->filename,
-            headers: [
-                'Content-Type' => 'video/mp4',
-            ]
-        )->deleteFileAfterSend(true);
+            $this->downloader->download(
+                $video,
+                $temp,
+                $action,
+            );
+
+            return response()
+                ->download($temp, $video->filename)
+                ->deleteFileAfterSend(true);
+        }
+
+        return back();
     }
 }

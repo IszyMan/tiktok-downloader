@@ -8,44 +8,168 @@
 
         <div class="hero-inner">
 
-            <span class="hero-badge">
-                No Watermark • Fast • HD Quality
-            </span>
+            @if(!isset($video))
 
-            <h1>
-                TikTok Video Downloader
-            </h1>
+                <span class="hero-badge">
+                    No Watermark • Fast • HD Quality
+                </span>
 
-            <p>
-                Download TikTok videos without watermark for free.
-                No installation, no login and no limits.
-            </p>
+                <h1>
+                    TikTok Video Downloader
+                </h1>
 
-            @if ($errors->any())
-                <div class="error-box">
-                    {{ $errors->first() }}
+                <p>
+                    Download TikTok videos without watermark for free.
+                    No installation, no login and no limits.
+                </p>
+
+                @if ($errors->any())
+                    <div class="error-box">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
+                <form
+                    action="{{ route('download') }}"
+                    method="POST"
+                    class="download-form">
+
+                    @csrf
+
+                    <input
+                        type="url"
+                        name="url"
+                        value="{{ old('url') }}"
+                        placeholder="Paste TikTok URL here..."
+                        required>
+
+                    <button type="submit">
+                        Download
+                    </button>
+
+                </form>
+
+            @else
+
+                <span class="hero-badge">
+                    Video Ready. Preview your TikTok video below and choose how you'd like to download it.
+                </span>
+
+                <div class="preview-card">
+
+                    <img
+                        class="preview-background"
+                        src="{{ $video->media->cover }}"
+                        alt="{{ $video->title }}">
+
+                    <div class="preview-overlay">
+
+                        <div class="preview-top">
+
+                            <div class="preview-thumbnail">
+
+                                <img
+                                    src="{{ $video->media->cover }}"
+                                    alt="{{ $video->title }}">
+
+                                <div class="play-icon">
+                                    ▶
+                                </div>
+
+                            </div>
+
+                            <div class="preview-info">
+
+                                <h3 class="preview-title">
+                                    {{ $video->title }}
+                                </h3>
+
+                                <div class="author-row">
+
+                                    <img
+                                        class="author-avatar"
+                                        src="{{ $video->author->avatar }}"
+                                        alt="{{ $video->author->nickname }}">
+
+                                    <div>
+
+                                        <strong>
+                                            {{ $video->author->nickname }}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="video-stats">
+
+                                    <span>
+                                        ▶ {{ number_format($video->statistics->views ?? 0) }}
+                                    </span>
+
+                                    <span>
+                                        ❤️ {{ number_format($video->statistics->likes ?? 0) }}
+                                    </span>
+
+                                    <span>
+                                        🔁 {{ number_format($video->statistics->shares ?? 0) }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="download-buttons">
+
+                            <form method="POST" action="{{ route('download') }}">
+
+                                @csrf
+
+                                <input type="hidden" name="url" value="{{ $url }}">
+
+                                <input type="hidden" name="action" value="watermark">
+
+                                <button class="btn-primary">
+
+                                    ⬇ Download (Watermark)
+
+                                </button>
+
+                            </form>
+
+                            <form method="POST" action="{{ route('download') }}">
+
+                                @csrf
+
+                                <input type="hidden" name="url" value="{{ $url }}">
+
+                                <input type="hidden" name="action" value="hd">
+
+                                <button class="btn-secondary">
+
+                                    ⬇ Download HD (No Watermark)
+
+                                </button>
+
+                            </form>
+
+                            <a
+                                href="{{ route('home') }}"
+                                class="btn-outline">
+
+                                Download Another Video
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             @endif
-
-            <form
-                action="{{ route('download') }}"
-                method="POST"
-                class="download-form">
-
-                @csrf
-
-                <input
-                    type="url"
-                    name="url"
-                    value="{{ old('url') }}"
-                    placeholder="Paste TikTok URL here..."
-                    required>
-
-                <button type="submit">
-                    Download
-                </button>
-
-            </form>
 
         </div>
 
