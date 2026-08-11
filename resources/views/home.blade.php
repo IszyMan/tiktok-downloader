@@ -2,136 +2,388 @@
 
 @section('content')
 
-<section class="hero">
+@php
+    /*
+    |--------------------------------------------------------------------------
+    | Platform / Preview Helpers
+    |--------------------------------------------------------------------------
+    |
+    | The controller already uses VideoProviderManager to detect the
+    | platform. Here we only use the returned DTO to adjust the UI.
+    |
+    */
 
-    <div class="hero-content">
+    $isX = isset($video) && $video->provider === 'ytdlp-x';
 
-        <div class="hero-inner">
+    $isTikTok = isset($video) && ! $isX;
 
-            @if(!isset($video))
+    $thumbnail = null;
 
-                <span class="hero-badge">
-                    No Watermark • Fast • HD Quality
+    if (isset($video)) {
+        $thumbnail =
+            $video->media->cover
+            ?? $video->media->thumbnail
+            ?? null;
+    }
+
+    $platformName = $isX ? 'X Video' : 'TikTok Video';
+@endphp
+
+
+<div class="hero-content">
+
+    <div class="hero-inner">
+
+        {{-- =========================================================
+             INITIAL DOWNLOAD FORM
+        ========================================================== --}}
+
+        @if(!isset($video))
+
+            <span class="hero-badge">
+                TikTok & X • Fast • HD Quality
+            </span>
+
+            <h1>
+                TikTok & X Video Downloader
+            </h1>
+
+            <p>
+                Download videos from TikTok and X in HD quality.
+                No installation, no login and no complicated steps.
+            </p>
+
+
+            {{-- Validation / Error Message --}}
+
+            @if ($errors->any())
+
+                <div class="error-box">
+                    {{ $errors->first() }}
+                </div>
+
+            @endif
+
+
+            {{-- Download Form --}}
+
+            <form
+                action="{{ route('download') }}"
+                method="POST"
+                class="download-form">
+
+                @csrf
+
+                <input
+                    type="url"
+                    name="url"
+                    value="{{ old('url') }}"
+                    placeholder="Paste TikTok or X video link here..."
+                    required>
+
+                <button type="submit">
+                    Download
+                </button>
+
+            </form>
+
+
+            {{-- Supported Platforms --}}
+
+            <div class="supported-platforms">
+
+                <span>
+                    Supports:
                 </span>
 
-                <h1>
-                    TikTok Video Downloader
-                </h1>
-
-                <p>
-                    Download TikTok videos without watermark for free.
-                    No installation, no login and no limits.
-                </p>
-
-                @if ($errors->any())
-                    <div class="error-box">
-                        {{ $errors->first() }}
-                    </div>
-                @endif
-
-                <form
-                    action="{{ route('download') }}"
-                    method="POST"
-                    class="download-form">
-
-                    @csrf
-
-                    <input
-                        type="url"
-                        name="url"
-                        value="{{ old('url') }}"
-                        placeholder="Paste TikTok URL here..."
-                        required>
-
-                    <button type="submit">
-                        Download
-                    </button>
-
-                </form>
-
-            @else
-
-                <span class="hero-badge">
-                    Video Ready. Preview your TikTok video below and choose how you'd like to download it.
+                <span class="platform-pill">
+                    TikTok
                 </span>
 
-                <div class="preview-card">
+                <span class="platform-pill">
+                    X
+                </span>
+
+            </div>
+
+
+        {{-- =========================================================
+             VIDEO PREVIEW
+        ========================================================== --}}
+
+        @else
+
+            <span class="hero-badge">
+                {{ $platformName }} Ready
+            </span>
+
+            <p class="preview-description">
+                Your video has been detected.
+                Preview it below and choose how you'd like to download it.
+            </p>
+
+
+            <div class="preview-card">
+
+
+                {{-- =================================================
+                     BACKGROUND IMAGE
+                ================================================== --}}
+
+                @if($thumbnail)
 
                     <img
                         class="preview-background"
-                        src="{{ $video->media->cover }}"
-                        alt="{{ $video->title }}">
+                        src="{{ $thumbnail }}"
+                        alt="{{ $video->title ?? $platformName }}"
+                        loading="lazy">
 
-                    <div class="preview-overlay">
+                @endif
 
-                        <div class="preview-top">
 
-                            <div class="preview-thumbnail">
+                <div class="preview-overlay">
+
+
+                    {{-- =================================================
+                         PLATFORM LABEL
+                    ================================================== --}}
+
+                    <div class="preview-platform">
+
+                        <span class="platform-label">
+
+                            {{ $platformName }}
+
+                        </span>
+
+                    </div>
+
+
+                    {{-- =================================================
+                         TOP PREVIEW INFORMATION
+                    ================================================== --}}
+
+                    <div class="preview-top">
+
+
+                        {{-- Thumbnail --}}
+
+                        <div class="preview-thumbnail">
+
+                            @if($thumbnail)
 
                                 <img
-                                    src="{{ $video->media->cover }}"
-                                    alt="{{ $video->title }}">
+                                    src="{{ $thumbnail }}"
+                                    alt="{{ $video->title ?? $platformName }}"
+                                    loading="lazy">
 
-                                <div class="play-icon">
-                                    ▶
-                                </div>
+                            @endif
 
+                            <div class="play-icon">
+                                ▶
                             </div>
 
-                            <div class="preview-info">
+                        </div>
 
-                                <h3 class="preview-title">
-                                    {{ $video->title }}
-                                </h3>
+
+                        {{-- Information --}}
+
+                        <div class="preview-info">
+
+
+                            {{-- Title --}}
+
+                            <h3 class="preview-title">
+
+                                {{ $video->title ?: 'Video' }}
+
+                            </h3>
+
+
+                            {{-- Author --}}
+
+                            @if(isset($video->author))
 
                                 <div class="author-row">
 
-                                    <img
-                                        class="author-avatar"
-                                        src="{{ $video->author->avatar }}"
-                                        alt="{{ $video->author->nickname }}">
+                                    @if(!empty($video->author->avatar))
+
+                                        <img
+                                            class="author-avatar"
+                                            src="{{ $video->author->avatar }}"
+                                            alt="{{ $video->author->nickname ?? $video->author->username ?? 'Author' }}"
+                                            loading="lazy">
+
+                                    @endif
 
                                     <div>
 
                                         <strong>
-                                            {{ $video->author->nickname }}
+
+                                            {{ $video->author->nickname
+                                                ?? $video->author->username
+                                                ?? 'Unknown creator' }}
+
                                         </strong>
+
+                                        @if(!empty($video->author->username))
+
+                                            <small>
+                                                @{{ $video->author->username }}
+                                            </small>
+
+                                        @endif
 
                                     </div>
 
                                 </div>
 
+                            @endif
+
+
+                            {{-- =================================================
+                                 VIDEO STATS
+                            ================================================== --}}
+
+                            @if(isset($video->statistics))
+
                                 <div class="video-stats">
 
                                     <span>
-                                        ▶ {{ number_format($video->statistics->views ?? 0) }}
+                                        ▶
+                                        {{ number_format($video->statistics->views ?? 0) }}
                                     </span>
 
                                     <span>
-                                        ❤️ {{ number_format($video->statistics->likes ?? 0) }}
+                                        ❤️
+                                        {{ number_format($video->statistics->likes ?? 0) }}
                                     </span>
 
                                     <span>
-                                        🔁 {{ number_format($video->statistics->shares ?? 0) }}
+                                        🔁
+                                        {{ number_format($video->statistics->shares ?? 0) }}
                                     </span>
 
                                 </div>
 
-                            </div>
+                            @endif
+
 
                         </div>
 
-                        <div class="download-buttons">
+                    </div>
 
-                            <form method="POST" action="{{ route('download') }}">
+
+                    {{-- =================================================
+                         VIDEO DETAILS
+                    ================================================== --}}
+
+                    <div class="preview-details">
+
+                        @if(!empty($video->duration))
+
+                            <span>
+                                ⏱
+                                {{ gmdate('i:s', (int) $video->duration) }}
+                            </span>
+
+                        @endif
+
+                        @if(!empty($video->width) && !empty($video->height))
+
+                            <span>
+                                🎥
+                                {{ $video->width }}×{{ $video->height }}
+                            </span>
+
+                        @endif
+
+                        @if($isX)
+
+                            <span>
+                                X
+                            </span>
+
+                        @else
+
+                            <span>
+                                TikTok
+                            </span>
+
+                        @endif
+
+                    </div>
+
+
+                    {{-- =================================================
+                         DOWNLOAD BUTTONS
+                    ================================================== --}}
+
+                    <div class="download-buttons">
+
+
+                        {{-- =================================================
+                             X DOWNLOAD
+                             X currently does not provide a separate
+                             watermark download.
+                        ================================================== --}}
+
+                        @if($isX)
+
+                            <form
+                                method="POST"
+                                action="{{ route('download') }}">
 
                                 @csrf
 
-                                <input type="hidden" name="url" value="{{ $url }}">
+                                <input
+                                    type="hidden"
+                                    name="url"
+                                    value="{{ $url }}">
 
-                                <input type="hidden" name="action" value="watermark">
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="hd">
 
-                                <button class="btn-primary">
+                                <button
+                                    type="submit"
+                                    class="btn-primary">
+
+                                    ⬇ Download HD
+
+                                </button>
+
+                            </form>
+
+
+                        {{-- =================================================
+                             TIKTOK DOWNLOAD
+                        ================================================== --}}
+
+                        @else
+
+                            {{-- Watermark --}}
+
+                            <form
+                                method="POST"
+                                action="{{ route('download') }}">
+
+                                @csrf
+
+                                <input
+                                    type="hidden"
+                                    name="url"
+                                    value="{{ $url }}">
+
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="watermark">
+
+                                <button
+                                    type="submit"
+                                    class="btn-primary">
 
                                     ⬇ Download (Watermark)
 
@@ -139,15 +391,28 @@
 
                             </form>
 
-                            <form method="POST" action="{{ route('download') }}">
+
+                            {{-- HD / No Watermark --}}
+
+                            <form
+                                method="POST"
+                                action="{{ route('download') }}">
 
                                 @csrf
 
-                                <input type="hidden" name="url" value="{{ $url }}">
+                                <input
+                                    type="hidden"
+                                    name="url"
+                                    value="{{ $url }}">
 
-                                <input type="hidden" name="action" value="hd">
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="hd">
 
-                                <button class="btn-secondary">
+                                <button
+                                    type="submit"
+                                    class="btn-secondary">
 
                                     ⬇ Download HD (No Watermark)
 
@@ -155,225 +420,206 @@
 
                             </form>
 
-                            <a
-                                href="{{ route('home') }}"
-                                class="btn-outline">
+                        @endif
 
-                                Download Another Video
 
-                            </a>
+                        {{-- Download Another --}}
 
-                        </div>
+                        <a
+                            href="{{ route('home') }}"
+                            class="btn-outline">
+
+                            Download Another Video
+
+                        </a>
 
                     </div>
 
+
                 </div>
 
-            @endif
+            </div>
+
+        @endif
+
+    </div>
+
+</div>
+
+
+
+{{-- ================================================================
+     FEATURES
+================================================================ --}}
+
+<div class="features-card">
+
+
+    <div class="feature-item">
+
+        <span>
+            ⚡
+        </span>
+
+        <div>
+
+            <h3>
+                Fast Download
+            </h3>
+
+            <p>
+                Download TikTok and X videos in seconds.
+            </p>
 
         </div>
 
     </div>
 
-</section>
+
+    <div class="divider"></div>
 
 
+    <div class="feature-item">
 
-<section class="features-section">
+        <span>
+            🎥
+        </span>
 
-    <div class="features-card">
+        <div>
 
-        <div class="feature-item">
+            <h3>
+                HD Quality
+            </h3>
 
-            <span>
-
-                ⚡
-
-            </span>
-
-            <div>
-
-                <h3>
-
-                    Fast Download
-
-                </h3>
-
-                <p>
-
-                    Download videos in seconds.
-
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="feature-item">
-
-            <span>
-
-                🎥
-
-            </span>
-
-            <div>
-
-                <h3>
-
-                    HD Quality
-
-                </h3>
-
-                <p>
-
-                    Best quality available.
-
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="feature-item">
-
-            <span>
-
-                🔒
-
-            </span>
-
-            <div>
-
-                <h3>
-
-                    No Login
-
-                </h3>
-
-                <p>
-
-                    Just paste your link.
-
-                </p>
-
-            </div>
+            <p>
+                Get the best available video quality.
+            </p>
 
         </div>
 
     </div>
 
-</section>
+
+    <div class="divider"></div>
+
+
+    <div class="feature-item">
+
+        <span>
+            🔒
+        </span>
+
+        <div>
+
+            <h3>
+                No Login
+            </h3>
+
+            <p>
+                Just paste your video link and download.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 
-<section class="how-section">
+{{-- ================================================================
+     HOW IT WORKS
+================================================================ --}}
+
+<section class="how-it-works">
 
     <h2>
-
-        How to Download TikTok Videos
-
+        How to Download TikTok & X Videos
     </h2>
 
     <p class="section-description">
-
-        Download your favorite TikTok videos in just four simple steps.
-
+        Download videos in just four simple steps.
     </p>
+
 
     <div class="steps">
 
+
+        {{-- Step 1 --}}
+
         <div class="step">
 
             <div class="step-number">
-
                 1
-
             </div>
 
             <h3>
-
                 Copy Link
-
             </h3>
 
             <p>
-
-                Open TikTok and copy the video URL.
-
+                Open TikTok or X and copy the video URL.
             </p>
 
         </div>
 
+
+        {{-- Step 2 --}}
+
         <div class="step">
 
             <div class="step-number">
-
                 2
-
             </div>
 
             <h3>
-
                 Paste URL
-
             </h3>
 
             <p>
-
-                Paste the copied link into the download box.
-
+                Paste the copied link into the downloader above.
             </p>
 
         </div>
 
+
+        {{-- Step 3 --}}
+
         <div class="step">
 
             <div class="step-number">
-
                 3
-
             </div>
 
             <h3>
-
                 Download
-
             </h3>
 
             <p>
-
-                Click the Download button.
-
+                Click the Download button and wait for your video to process.
             </p>
 
         </div>
+
+
+        {{-- Step 4 --}}
 
         <div class="step">
 
             <div class="step-number">
-
                 4
-
             </div>
 
             <h3>
-
                 Save Video
-
             </h3>
 
             <p>
-
-                Save your video to your device.
-
+                Save the downloaded video to your device.
             </p>
 
         </div>
+
 
     </div>
 
@@ -381,61 +627,96 @@
 
 
 
-<section class="faq">
+{{-- ================================================================
+     FAQ
+================================================================ --}}
+
+<section class="faq-section">
 
     <h2>
-
         Frequently Asked Questions
-
     </h2>
 
+
+    {{-- FAQ 1 --}}
+
     <div class="faq-item">
 
         <h3>
-
-            Is this downloader free?
-
+            Is the TikTok and X downloader free?
         </h3>
 
         <p>
-
-            Yes. You can download TikTok videos completely free.
-
+            Yes. You can use the downloader to download supported
+            TikTok and X videos without creating an account.
         </p>
 
     </div>
 
+
+    {{-- FAQ 2 --}}
+
     <div class="faq-item">
 
         <h3>
-
-            Can I use it on mobile?
-
+            Can I download X videos?
         </h3>
 
         <p>
-
-            Yes. It works perfectly on Android, iPhone, tablets and desktop browsers.
-
+            Yes. Paste a public X video URL and the downloader
+            will automatically detect the platform.
         </p>
 
     </div>
 
+
+    {{-- FAQ 3 --}}
+
     <div class="faq-item">
 
         <h3>
+            Can I download TikTok videos without a watermark?
+        </h3>
 
+        <p>
+            Yes. When a no-watermark version is available,
+            you can choose the HD no-watermark download option.
+        </p>
+
+    </div>
+
+
+    {{-- FAQ 4 --}}
+
+    <div class="faq-item">
+
+        <h3>
+            Can I use the downloader on my phone?
+        </h3>
+
+        <p>
+            Yes. The downloader works on Android, iPhone,
+            tablets and desktop browsers.
+        </p>
+
+    </div>
+
+
+    {{-- FAQ 5 --}}
+
+    <div class="faq-item">
+
+        <h3>
             Do I need to install anything?
-
         </h3>
 
         <p>
-
-            No installation is required. Everything runs directly in your browser.
-
+            No. Everything works directly in your web browser.
+            No application or browser extension is required.
         </p>
 
     </div>
+
 
 </section>
 

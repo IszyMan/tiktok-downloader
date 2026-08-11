@@ -38,7 +38,17 @@ return [
     'ytdlp' => [
         'binary' => env(
             'YTDLP_BINARY',
-            'yt-dlp'
+            base_path('bin/yt-dlp.exe')
+        ),
+
+        'ffmpeg' => env(
+            'FFMPEG_BINARY',
+            base_path('bin/ffmpeg.exe')
+        ),
+
+        'ffprobe' => env(
+            'FFPROBE_BINARY',
+            base_path('bin/ffprobe.exe')
         ),
     ],
 

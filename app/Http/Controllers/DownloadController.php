@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\Downloader\TikTokVideoDownloader;
-use App\Services\Downloader\Providers\TikTok\TikTokProviderManager;
+use App\Services\Downloader\VideoDownloader;
+use App\Services\Downloader\Providers\VideoProviderManager;
 
 class DownloadController extends Controller
 {
     public function __construct(
-        private readonly TikTokProviderManager $provider,
-        private readonly TikTokVideoDownloader $downloader,
+        private readonly VideoProviderManager $provider,
+        private readonly VideoDownloader $downloader,
     ) {
     }
 
@@ -22,9 +22,16 @@ class DownloadController extends Controller
 
         $action = $request->input('action', 'preview');
 
-        $video = $this->provider->fetch($validated['url']);
+        /*
+         * Fetch metadata from either TikTok or X.
+         */
+        $video = $this->provider->fetch(
+            $validated['url']
+        );
 
-        // Preview
+        /*
+         * Preview
+         */
         if ($action === 'preview') {
 
             return view('home', [
@@ -33,12 +40,25 @@ class DownloadController extends Controller
             ]);
         }
 
-        // Download
+        /*
+         * Download
+         */
         if (in_array($action, ['hd', 'watermark'])) {
 
-            $temp = storage_path(
-                'app/temp/' . $video->filename
-            );
+            $tempDirectory = storage_path('app/temp');
+
+            /*
+             * Make sure the temporary directory exists.
+             */
+            if (! is_dir($tempDirectory)) {
+                mkdir(
+                    $tempDirectory,
+                    0755,
+                    true
+                );
+            }
+
+            $temp = $tempDirectory . '/' . $video->filename;
 
             $this->downloader->download(
                 $video,
@@ -47,7 +67,10 @@ class DownloadController extends Controller
             );
 
             return response()
-                ->download($temp, $video->filename)
+                ->download(
+                    $temp,
+                    $video->filename
+                )
                 ->deleteFileAfterSend(true);
         }
 

@@ -7,6 +7,5 @@ use App\Http\Controllers\DownloadController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/', [DownloadController::class, 'download'])->name('download');
 
-Route::get('/test-route', function () {
-    dd(route('download'));
-});
+Route::get('/tiktok-downloader', [DownloadController::class, 'tiktok'])->name('tiktok.downloader');
+Route::get('/x-downloader', [DownloadController::class, 'x'])->name('x.downloader');

@@ -14,7 +14,8 @@
         TikTok Downloader - Download TikTok Videos Without Watermark
     </title>
 
-    @vite(['resources/css/app.css'])
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <script src="{{ asset('js/app.js') }}" defer></script>
 
 </head>
 
@@ -114,7 +115,7 @@
 
             <p>
 
-                Download TikTok videos without watermark in HD quality.
+                Best TikTok videos downloader without watermark in HD quality.
 
             </p>
 
