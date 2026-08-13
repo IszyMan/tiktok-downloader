@@ -42,6 +42,14 @@ class DownloadController extends Controller
     }
 
     /**
+     * YouTube-only downloader page.
+     */
+    public function youtube()
+    {
+        return view('youtube.downloader');
+    }
+
+    /**
      * Preview or download a video.
      */
     public function download(Request $request)
@@ -106,6 +114,16 @@ class DownloadController extends Controller
                             'TikTok URL detected. Please use our TikTok Downloader instead.',
                     ]);
             }
+
+            if ($detectedPlatform === 'youtube') {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'url' =>
+                            'YouTube URL detected. Please use our YouTube Downloader instead.',
+                    ]);
+            }
         }
 
         /*
@@ -124,7 +142,7 @@ class DownloadController extends Controller
                 ->withInput()
                 ->withErrors([
                     'url' =>
-                        'We could not process this video. Please check the URL and try again.',
+                        'Arwotuni! We could not process this video. Please check the URL and try again.',
                 ]);
         }
 
@@ -140,6 +158,8 @@ class DownloadController extends Controller
                 'tiktok' => 'tiktok.downloader',
 
                 'x' => 'x.downloader',
+
+                'youtube' => 'youtube.downloader',
 
                 default => 'home',
             };
@@ -161,7 +181,7 @@ class DownloadController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if (in_array($action, ['hd', 'watermark'], true)) {
+        if (in_array($action, ['hd', 'watermark', 'mp3'], true)) {
 
             $tempDirectory = storage_path('app/temp');
 
@@ -180,7 +200,22 @@ class DownloadController extends Controller
                 );
             }
 
-            $temp = $tempDirectory . '/' . $video->filename;
+            $filename = $video->filename;
+
+            if (
+                $action === 'mp3' &&
+                str_ends_with(
+                    strtolower($filename),
+                    '.mp4'
+                )
+            ) {
+                $filename = pathinfo(
+                    $filename,
+                    PATHINFO_FILENAME
+                ) . '.mp3';
+            }
+
+            $temp = $tempDirectory . '/' . $filename;
 
             $this->downloader->download(
                 $video,
@@ -191,7 +226,7 @@ class DownloadController extends Controller
             return response()
                 ->download(
                     $temp,
-                    $video->filename
+                    $filename
                 )
                 ->deleteFileAfterSend(true);
         }

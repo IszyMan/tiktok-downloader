@@ -6,7 +6,10 @@ use RuntimeException;
 use App\Services\Downloader\DTO\VideoData;
 use App\Services\Downloader\Providers\TikTok\TikTokProviderManager;
 use App\Services\Downloader\Providers\X\XProviderManager;
+use App\Services\Downloader\Providers\YouTube\YouTubeProviderManager;
 use App\Services\Downloader\UrlPlatformDetector;
+
+
 
 class VideoProviderManager
 {
@@ -14,6 +17,7 @@ class VideoProviderManager
         private readonly UrlPlatformDetector $detector,
         private readonly TikTokProviderManager $tikTok,
         private readonly XProviderManager $x,
+        private readonly YouTubeProviderManager $youtube,
     ) {
     }
 
@@ -24,6 +28,7 @@ class VideoProviderManager
         return match ($platform) {
             'tiktok' => $this->tikTok->fetch($url),
             'x' => $this->x->fetch($url),
+            'youtube' => $this->youtube->fetch($url),
 
             default => throw new RuntimeException(
                 "Unsupported platform [{$platform}]"

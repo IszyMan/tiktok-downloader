@@ -45,6 +45,16 @@
     --x-gray: #536471;
 
 
+
+    /* =====================================================
+    YOUTUBE COLORS
+    ===================================================== */
+
+    --youtube-red: #ff0000;
+    --youtube-dark: #cc0000;
+    --youtube-light: #ff4d4d;
+
+
     /* =====================================================
        DEFAULT PLATFORM COLORS
     ===================================================== */
@@ -83,6 +93,13 @@
     --platform-button-text: #ffffff;
 }
 
+.platform-youtube {
+    --platform-primary: var(--youtube-red);
+    --platform-secondary: var(--youtube-dark);
+    --platform-accent: var(--youtube-light);
+    --platform-button-text: #ffffff;
+}
+
 /* =========================================================
    PLATFORM THEMES
 ========================================================= */
@@ -98,6 +115,13 @@
     --platform-primary: var(--x-black);
     --platform-secondary: var(--x-dark);
     --platform-accent: #ffffff;
+    --platform-button-text: #ffffff;
+}
+
+.theme-youtube {
+    --platform-primary: var(--youtube-red);
+    --platform-secondary: var(--youtube-dark);
+    --platform-accent: var(--youtube-light);
     --platform-button-text: #ffffff;
 }
 
@@ -489,6 +513,17 @@ DOWNLOADER HERO
 .platform-pill.platform-x {
     background: var(--x-black);
     border-color: rgba(255, 255, 255, .4);
+}
+
+.platform-pill.platform-youtube {
+    background:
+        linear-gradient(
+            135deg,
+            var(--youtube-red),
+            var(--youtube-dark)
+        );
+
+    border-color: rgba(255, 255, 255, .35);
 }
 
 
@@ -1137,6 +1172,45 @@ DOWNLOADER HERO
 
 
 /* =========================================================
+   YOUTUBE DISCLAIMER
+========================================================= */
+
+.youtube-disclaimer {
+    width: min(900px, 92%);
+
+    margin: 30px auto 70px;
+
+    padding: 18px 22px;
+
+    border: 1px solid rgba(255, 0, 0, 0.15);
+
+    border-left: 4px solid var(--youtube-red);
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.85);
+
+    color: #4b5563;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.04);
+}
+
+.youtube-disclaimer p {
+    margin: 0;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+.youtube-disclaimer strong {
+    color: var(--youtube-dark);
+
+    font-weight: 700;
+}
+
+/* =========================================================
    FOOTER
 ========================================================= */
 
@@ -1491,6 +1565,21 @@ footer {
         padding: 20px;
 
         border-radius: 14px;
+    }
+
+    .youtube-disclaimer {
+        width: calc(100% - 32px);
+
+        margin: 25px auto 55px;
+
+        padding: 15px 16px;
+
+        border-left-width: 3px;
+    }
+
+    .youtube-disclaimer p {
+        font-size: 13px;
+        line-height: 1.6;
     }
 
     .footer-container {

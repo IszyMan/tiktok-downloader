@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Http;
 use App\Services\Downloader\DTO\VideoData;
 use App\Services\Downloader\Scrapers\TikTok\YtDlp\YtDlpService;
 use App\Services\Downloader\Scrapers\X\YtDlp\YtDlpXService;
+use App\Services\Downloader\Scrapers\YouTube\YtDlp\YtDlpYouTubeService;
 
 class VideoDownloader
 {
     public function __construct(
         private readonly YtDlpService $tikTokYtDlp,
         private readonly YtDlpXService $xYtDlp,
+        private readonly YtDlpYouTubeService $youtubeYtDlp,
     ) {
     }
 
@@ -41,6 +43,12 @@ class VideoDownloader
             'ytdlp-x' => $this->downloadWithXYtDlp(
                 $video,
                 $outputPath,
+            ),
+
+            'ytdlp-youtube' => $this->downloadWithYouTubeYtDlp(
+                $video,
+                $outputPath,
+                $type,
             ),
 
             default => throw new RuntimeException(
@@ -111,6 +119,32 @@ class VideoDownloader
             url: $video->sourceUrl,
             outputPath: $outputPath,
             formatId: null,
+        );
+    }
+
+
+    /**
+     * Download YouTube video or MP3 using yt-dlp.
+     */
+    private function downloadWithYouTubeYtDlp(
+        VideoData $video,
+        string $outputPath,
+        string $type,
+    ): void {
+
+        if ($type === 'mp3') {
+
+            $this->youtubeYtDlp->downloadMp3(
+                url: $video->sourceUrl,
+                outputPath: $outputPath,
+            );
+
+            return;
+        }
+
+        $this->youtubeYtDlp->downloadVideo(
+            url: $video->sourceUrl,
+            outputPath: $outputPath,
         );
     }
 

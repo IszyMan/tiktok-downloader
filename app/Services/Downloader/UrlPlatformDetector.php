@@ -30,6 +30,14 @@ class UrlPlatformDetector
             return 'x';
         }
 
+        if (
+            $host === 'youtube.com' ||
+            str_ends_with($host, '.youtube.com') ||
+            $host === 'youtu.be'
+        ) {
+            return 'youtube';
+        }
+
         throw new RuntimeException(
             'Unsupported URL. Please enter a TikTok or X video URL.'
         );

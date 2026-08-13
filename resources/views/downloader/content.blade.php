@@ -18,6 +18,7 @@
     $isUniversal = $platform === 'universal';
     $isTikTok = $platform === 'tiktok';
     $isX = $platform === 'x';
+    $isYouTube = $platform === 'youtube';
 
 
     /*
@@ -50,19 +51,31 @@
 
     $videoIsX = false;
     $videoIsTikTok = false;
+    $videoIsYouTube = false;
 
     if ($hasVideo) {
 
         $videoIsX =
             ($video->provider ?? null) === 'ytdlp-x'
-            || ($video->extra['extractor'] ?? null) === 'twitter';
+            ||
+            ($video->extra['extractor'] ?? null) === 'twitter';
 
-        $videoIsTikTok = ! $videoIsX;
+        $videoIsYouTube =
+            ($video->provider ?? null) === 'ytdlp-youtube'
+            ||
+            ($video->extra['extractor'] ?? null) === 'youtube';
+
+        $videoIsTikTok =
+            ! $videoIsX &&
+            ! $videoIsYouTube;
     }
 
-    $previewPlatformName = $videoIsX
-        ? 'X Video'
-        : 'TikTok Video';
+    $previewPlatformName = match (true) {
+
+        $videoIsX => 'X Video',
+        $videoIsYouTube => 'YouTube Video',
+        default => 'TikTok Video',
+    };
 
 @endphp
 
@@ -100,9 +113,13 @@
 
                         X • Fast • HD Quality
 
+                    @elseif($isYouTube)
+
+                        YouTube • Fast • HD Quality    
+
                     @else
 
-                        TikTok & X • Fast • HD Quality
+                        TikTok • X • YouTube • Fast • HD Quality
 
                     @endif
 
@@ -238,6 +255,17 @@
                             class="platform-pill platform-x"
                         >
                             X
+                        </a>
+
+                    @endif
+
+                    @if($isUniversal || $isYouTube)
+
+                        <a
+                            href="{{ route('youtube.downloader') }}"
+                            class="platform-pill platform-youtube"
+                        >
+                            YouTube
                         </a>
 
                     @endif
@@ -465,8 +493,82 @@
                         ================================================== --}}
 
                         <div class="download-buttons">
+                            @if($videoIsYouTube)
 
-                            @if($videoIsX)
+                                {{-- YouTube Video --}}
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('download') }}"
+                                >
+
+                                    @csrf
+
+                                    <input
+                                        type="hidden"
+                                        name="url"
+                                        value="{{ $url }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="platform"
+                                        value="{{ $platform }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="hd"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn-primary"
+                                    >
+                                        ⬇ Download Video (HD)
+                                    </button>
+
+                                </form>
+
+
+                                {{-- YouTube MP3 --}}
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('download') }}"
+                                >
+
+                                    @csrf
+
+                                    <input
+                                        type="hidden"
+                                        name="url"
+                                        value="{{ $url }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="platform"
+                                        value="{{ $platform }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="mp3"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn-secondary"
+                                    >
+                                        🎵 Download MP3
+                                    </button>
+
+                                </form>
+
+                            @elseif($videoIsX)
 
                                 {{-- X HD Download --}}
 
@@ -640,9 +742,13 @@
 
                             Download X videos in seconds.
 
+                        @elseif($isYouTube)
+
+                            Download YouTube videos in seconds.
+
                         @else
 
-                            Download TikTok and X videos in seconds.
+                            Download TikTok, X and YouTube videos in seconds.
 
                         @endif
 
@@ -718,9 +824,13 @@
 
                 How to Download X Videos
 
+            @elseif($isYouTube)
+
+                How to Download YouTube Videos
+
             @else
 
-                How to Download TikTok & X Videos
+                How to Download TikTok, X & YouTube Videos
 
             @endif
 
@@ -755,9 +865,13 @@
 
                         Open X and copy the video URL.
 
+                    @elseif($isYouTube)
+
+                        Open YouTube and copy the video URL.    
+
                     @else
 
-                        Open TikTok or X and copy the video URL.
+                        Open TikTok, X or Youtube and copy the video URL.
 
                     @endif
 
@@ -965,6 +1079,52 @@
 
             </div>
 
+       
+
+        @elseif($isYouTube)
+
+            <div class="faq-item">
+
+                <h3>
+                    Is the YouTube downloader free?
+                </h3>
+
+                <p>
+                    Yes. You can use the downloader to process
+                    supported YouTube videos without creating an account.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I download YouTube videos in HD?
+                </h3>
+
+                <p>
+                    When higher-quality video and audio streams are
+                    available, the downloader combines the best available
+                    video and audio into a single video file.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I download YouTube videos as MP3?
+                </h3>
+
+                <p>
+                    Yes. The YouTube downloader provides an MP3 option
+                    for extracting audio from supported videos.
+                </p>
+
+            </div>
+
         @endif
 
 
@@ -992,7 +1152,7 @@
 
             <p>
                 Yes. The downloader works on Android, iPhone,
-                tablets and desktop browsers.
+                tablets desktop browsers and all devices.
             </p>
 
         </div>
