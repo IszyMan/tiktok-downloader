@@ -11,13 +11,13 @@
 @php
     $platform = 'universal';
 
-    $pageTitle = 'Free TikTok & X Video Downloader';
+    $pageTitle = 'Free TikTok, X, Instagram  & Facebook Video Downloader';
 
     $pageDescription =
-        'Download TikTok and X videos quickly in HD quality. No installation, no login and no complicated steps.';
+        'Download TikTok, X, Instagram and Facebook videos quickly in HD quality. No installation, no login and no complicated steps.';
 
     $inputPlaceholder =
-        'Paste TikTok or X video link here...';
+        'Paste TikTok, X, Instagram or Facebook video link here...';
 @endphp
 
 @include('downloader.content')

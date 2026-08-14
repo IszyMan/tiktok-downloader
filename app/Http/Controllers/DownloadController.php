@@ -49,6 +49,15 @@ class DownloadController extends Controller
         return view('youtube.downloader');
     }
 
+
+    /**
+     * Instagram-only downloader page.
+     */
+    public function instagram()
+    {
+        return view('instagram.downloader');
+    }
+
     /**
      * Preview or download a video.
      */
@@ -124,6 +133,17 @@ class DownloadController extends Controller
                             'YouTube URL detected. Please use our YouTube Downloader instead.',
                     ]);
             }
+
+
+            if ($detectedPlatform === 'instagram') {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'url' =>
+                            'Instagram URL detected. Please use our Instagram Downloader instead.',
+                    ]);
+            }
         }
 
         /*
@@ -160,6 +180,8 @@ class DownloadController extends Controller
                 'x' => 'x.downloader',
 
                 'youtube' => 'youtube.downloader',
+
+                'instagram' => 'instagram.downloader',
 
                 default => 'home',
             };
@@ -224,10 +246,7 @@ class DownloadController extends Controller
             );
 
             return response()
-                ->download(
-                    $temp,
-                    $filename
-                )
+                ->download($temp, $filename)
                 ->deleteFileAfterSend(true);
         }
 

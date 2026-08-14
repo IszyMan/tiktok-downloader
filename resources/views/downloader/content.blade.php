@@ -19,6 +19,7 @@
     $isTikTok = $platform === 'tiktok';
     $isX = $platform === 'x';
     $isYouTube = $platform === 'youtube';
+    $isInstagram = $platform === 'instagram';
 
 
     /*
@@ -52,6 +53,7 @@
     $videoIsX = false;
     $videoIsTikTok = false;
     $videoIsYouTube = false;
+    $videoIsInstagram = false;
 
     if ($hasVideo) {
 
@@ -65,16 +67,24 @@
             ||
             ($video->extra['extractor'] ?? null) === 'youtube';
 
+        $videoIsInstagram =
+            ($video->provider ?? null) === 'ytdlp-instagram'
+            ||
+            ($video->extra['extractor'] ?? null) === 'instagram';
+
         $videoIsTikTok =
-            ! $videoIsX &&
-            ! $videoIsYouTube;
+            ($video->provider ?? null) === 'tikwm'
+            ||
+            ($video->extra['extractor'] ?? null) === 'tiktok';
     }
 
     $previewPlatformName = match (true) {
 
         $videoIsX => 'X Video',
         $videoIsYouTube => 'YouTube Video',
-        default => 'TikTok Video',
+        $videoIsInstagram => 'Instagram Video',
+        $videoIsTikTok => 'TikTok Video',
+        default => 'Video',
     };
 
 @endphp
@@ -115,11 +125,15 @@
 
                     @elseif($isYouTube)
 
-                        YouTube • Fast • HD Quality    
+                        YouTube • Fast • HD Quality 
+                        
+                    @elseif($isInstagram)
+
+                        Instagram • Reels • Fast • HD Quality  
 
                     @else
 
-                        TikTok • X • YouTube • Fast • HD Quality
+                        TikTok • X • YouTube • Instagram • Fast • HD Quality
 
                     @endif
 
@@ -153,13 +167,12 @@
                         </div>
 
 
-                        @if(
-                            $isTikTok &&
-                            str_contains(
-                                strtolower($errors->first()),
-                                'x url detected'
-                            )
-                        )
+                        @php
+                            $errorMessage = strtolower($errors->first());
+                        @endphp
+
+
+                        @if(str_contains($errorMessage, 'x url detected'))
 
                             <div class="error-action">
 
@@ -169,18 +182,35 @@
 
                             </div>
 
-                        @elseif(
-                            $isX &&
-                            str_contains(
-                                strtolower($errors->first()),
-                                'tiktok url detected'
-                            )
-                        )
+
+                        @elseif(str_contains($errorMessage, 'tiktok url detected'))
 
                             <div class="error-action">
 
                                 <a href="{{ route('tiktok.downloader') }}">
                                     Go to TikTok Downloader →
+                                </a>
+
+                            </div>
+
+
+                        @elseif(str_contains($errorMessage, 'youtube url detected'))
+
+                            <div class="error-action">
+
+                                <a href="{{ route('youtube.downloader') }}">
+                                    Go to YouTube Downloader →
+                                </a>
+
+                            </div>
+
+
+                        @elseif(str_contains($errorMessage, 'instagram url detected'))
+
+                            <div class="error-action">
+
+                                <a href="{{ route('instagram.downloader') }}">
+                                    Go to Instagram Downloader →
                                 </a>
 
                             </div>
@@ -270,6 +300,18 @@
 
                     @endif
 
+
+                    @if($isUniversal || $isInstagram)
+
+                        <a
+                            href="{{ route('instagram.downloader') }}"
+                            class="platform-pill platform-instagram"
+                        >
+                            Instagram
+                        </a>
+
+                    @endif
+
                 </div>
 
 
@@ -296,7 +338,15 @@
 
                 <div
                     class="preview-card
-                        {{ $videoIsX ? 'preview-theme-x' : 'preview-theme-tiktok' }}"
+                        @if($videoIsX)
+                            platform-x
+                        @elseif($videoIsYouTube)
+                            platform-youtube
+                        @elseif($videoIsInstagram)
+                            platform-instagram
+                        @else
+                            platform-tiktok
+                        @endif"
                 >
 
 
@@ -393,13 +443,7 @@
                                                     ?? 'Unknown creator' }}
                                             </strong>
 
-                                            @if(!empty($video->author->username))
-
-                                                <small>
-                                                    @{{ $video->author->username }}
-                                                </small>
-
-                                            @endif
+                                            
 
                                         </div>
 
@@ -482,7 +526,15 @@
 
 
                             <span>
-                                {{ $videoIsX ? 'X' : 'TikTok' }}
+                                @if($videoIsX)
+                                    X
+                                @elseif($videoIsYouTube)
+                                    YouTube
+                                @elseif($videoIsInstagram)
+                                    Instagram
+                                @else
+                                    TikTok
+                                @endif
                             </span>
 
                         </div>
@@ -567,6 +619,80 @@
                                     </button>
 
                                 </form>
+
+                            @elseif($videoIsInstagram)
+
+                                {{-- Instagram Video --}}
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('download') }}"
+                                >
+
+                                    @csrf
+
+                                    <input
+                                        type="hidden"
+                                        name="url"
+                                        value="{{ $url }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="platform"
+                                        value="{{ $platform }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="hd"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn-secondary"
+                                    >
+                                        ⬇ Download Instagram Video
+                                    </button>
+
+                                </form>
+
+                                {{-- Instagram Audio --}}
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('download') }}"
+                                >
+
+                                    @csrf
+
+                                    <input
+                                        type="hidden"
+                                        name="url"
+                                        value="{{ $url }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="platform"
+                                        value="{{ $platform }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="mp3"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn-primary"
+                                    >
+                                        🎵 Download Audio
+                                    </button>
+
+                                </form>    
 
                             @elseif($videoIsX)
 
@@ -686,14 +812,19 @@
 
                             {{-- Download Another --}}
 
-                            <a
-                                href="{{ $isTikTok
-                                    ? route('tiktok.downloader')
-                                    : ($isX
-                                        ? route('x.downloader')
-                                        : route('home')
+                            <a href="{{ $isTikTok
+                                ? route('tiktok.downloader')
+                                : ($isX
+                                    ? route('x.downloader')
+                                    : ($isYouTube
+                                        ? route('youtube.downloader')
+                                        : ($isInstagram
+                                            ? route('instagram.downloader')
+                                            : route('home')
+                                        )
                                     )
-                                }}"
+                                )
+                            }}"
                                 class="btn-outline"
                             >
                                 Download Another Video
@@ -745,6 +876,10 @@
                         @elseif($isYouTube)
 
                             Download YouTube videos in seconds.
+
+                        @elseif($isInstagram)
+
+                            Download Instagram videos in seconds.    
 
                         @else
 
@@ -828,9 +963,13 @@
 
                 How to Download YouTube Videos
 
+            @elseif($isInstagram)
+
+                How to Download Instagram Videos    
+
             @else
 
-                How to Download TikTok, X & YouTube Videos
+                How to Download TikTok, X, Instagram & YouTube Videos
 
             @endif
 
@@ -867,11 +1006,15 @@
 
                     @elseif($isYouTube)
 
-                        Open YouTube and copy the video URL.    
+                        Open YouTube and copy the video URL.   
+                        
+                    @elseif($isInstagram)
+
+                        Open Instagram and copy the video URL.    
 
                     @else
 
-                        Open TikTok, X or Youtube and copy the video URL.
+                        Open TikTok, X, Instagram or Youtube and copy the video URL.
 
                     @endif
 
@@ -952,12 +1095,12 @@
             <div class="faq-item">
 
                 <h3>
-                    Is the TikTok and X downloader free?
+                    Is the TikTok, X, Youtube and Instagram downloader free?
                 </h3>
 
                 <p>
-                    Yes. You can use the downloader to download
-                    supported TikTok and X videos without creating
+                    Yes. You can use our downloader to download
+                    supported TikTok, X, Youtube and Instagram videos without creating
                     an account.
                 </p>
 
@@ -967,12 +1110,12 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download X videos?
+                    Can I download videos from different platforms?
                 </h3>
 
                 <p>
-                    Yes. Paste a public X video URL and the downloader
-                    will automatically detect the platform.
+                    Yes. Paste a supported TikTok, X, YouTube or Instagram
+                    URL and the downloader will automatically detect the platform.
                 </p>
 
             </div>
@@ -1125,6 +1268,51 @@
 
             </div>
 
+
+        @elseif($isInstagram)
+
+            <div class="faq-item">
+
+                <h3>
+                    Is the Instagram downloader free?
+                </h3>
+
+                <p>
+                    Yes. You can download supported Instagram videos
+                    without creating an account.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I download Instagram Reels?
+                </h3>
+
+                <p>
+                    Yes. Paste a supported public Instagram Reel URL
+                    and the downloader will process the video.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I use the Instagram downloader on my phone?
+                </h3>
+
+                <p>
+                    Yes. The Instagram downloader works on Android,
+                    iPhone, tablets and desktop browsers.
+                </p>
+
+            </div>
+
+
         @endif
 
 
@@ -1159,5 +1347,7 @@
 
 
     </section>
+
+  
 
 </div>

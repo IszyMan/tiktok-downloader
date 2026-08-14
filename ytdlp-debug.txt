@@ -1,0 +1,30 @@
+[debug] Command-line config: ['--verbose', '--simulate', 'https://www.youtube.com/watch?v=HJUVE5sR87U']
+[debug] Encodings: locale cp1252, fs utf-8, pref cp1252, out cp1252 (No ANSI), error cp1252 (No ANSI), screen cp1252 (No ANSI)
+[debug] yt-dlp version nightly@2026.08.04.234419 from yt-dlp/yt-dlp-nightly-builds [5d6b8c8cd] (win_exe)
+[debug] Python 3.10.11 (CPython AMD64 64bit) - Windows-10-10.0.22000-SP0 (OpenSSL 1.1.1t  7 Feb 2023)
+[debug] exe versions: ffmpeg 8.1.2-essentials_build-www.gyan.dev (setts), ffprobe 8.1.2-essentials_build-www.gyan.dev
+[debug] Optional libraries: Cryptodome-3.23.0, brotli-1.2.0, certifi-2026.06.17, curl_cffi-0.15.0, mutagen-1.48.1, requests-2.34.2, sqlite3-3.40.1, urllib3-2.7.0, websockets-16.0, yt_dlp_ejs-0.8.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests, websockets, curl_cffi
+[debug] Plugin directories: none
+[debug] Loaded 1744 extractors
+[debug] [youtube] [pot] PO Token Providers: none
+[debug] [youtube] [pot] PO Token Cache Providers: memory
+[debug] [youtube] [pot] PO Token Cache Spec Providers: webpo
+[debug] [youtube] [jsc] JS Challenge Providers: bun (unavailable), deno (unavailable), node (unavailable), quickjs (unavailable)
+[youtube] Extracting URL: https://www.youtube.com/watch?v=HJUVE5sR87U
+[youtube] HJUVE5sR87U: Downloading webpage
+WARNING: [youtube] HJUVE5sR87U: Unable to download webpage: HTTP Error 429: Too Many Requests (caused by <HTTPError 429: Too Many Requests>)
+[youtube] HJUVE5sR87U: Downloading initial data API JSON
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] HJUVE5sR87U: Downloading visionos player API JSON
+[debug] [youtube] HJUVE5sR87U: visionos player response playability status: LOGIN_REQUIRED
+[youtube] HJUVE5sR87U: Downloading android vr player API JSON
+[debug] [youtube] HJUVE5sR87U: android_vr player response playability status: LOGIN_REQUIRED
+WARNING: [youtube] No title found in player responses; falling back to title from initial data. Other metadata may also be missing
+ERROR: [youtube] HJUVE5sR87U: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+  File "yt_dlp\extractor\common.py", line 765, in extract
+  File "yt_dlp\extractor\youtube\_video.py", line 4075, in _real_extract
+  File "yt_dlp\extractor\common.py", line 1272, in raise_no_formats
+

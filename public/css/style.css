@@ -56,6 +56,16 @@
 
 
     /* =====================================================
+    INSTAGRAM COLORS
+    ===================================================== */
+
+    --instagram-purple: #833ab4;
+    --instagram-pink: #e1306c;
+    --instagram-orange: #f77737;
+    --instagram-yellow: #fcaf45;
+
+
+    /* =====================================================
        DEFAULT PLATFORM COLORS
     ===================================================== */
 
@@ -93,10 +103,19 @@
     --platform-button-text: #ffffff;
 }
 
-.platform-youtube {
+
+
+.theme-youtube {
     --platform-primary: var(--youtube-red);
     --platform-secondary: var(--youtube-dark);
     --platform-accent: var(--youtube-light);
+    --platform-button-text: #ffffff;
+}
+
+.theme-instagram {
+    --platform-primary: var(--instagram-purple);
+    --platform-secondary: var(--instagram-pink);
+    --platform-accent: var(--instagram-orange);
     --platform-button-text: #ffffff;
 }
 
@@ -118,17 +137,24 @@
     --platform-button-text: #ffffff;
 }
 
-.theme-youtube {
+.platform-youtube {
     --platform-primary: var(--youtube-red);
     --platform-secondary: var(--youtube-dark);
     --platform-accent: var(--youtube-light);
     --platform-button-text: #ffffff;
 }
 
+.platform-instagram {
+    --platform-primary: var(--instagram-pink);
+    --platform-secondary: var(--instagram-purple);
+    --platform-accent: var(--instagram-orange);
+    --platform-button-text: #ffffff;
+}
+
 .platform-universal {
-    --platform-primary: var(--tiktok-pink);
-    --platform-secondary: var(--tiktok-purple);
-    --platform-accent: var(--tiktok-cyan);
+    --platform-primary: var(--universal-primary);
+    --platform-secondary: var(--universal-secondary);
+    --platform-accent: var(--universal-accent);
     --platform-button-text: #ffffff;
 }
 
@@ -521,6 +547,19 @@ DOWNLOADER HERO
             135deg,
             var(--youtube-red),
             var(--youtube-dark)
+        );
+
+    border-color: rgba(255, 255, 255, .35);
+}
+
+
+.platform-pill.platform-instagram {
+    background:
+        linear-gradient(
+            135deg,
+            var(--instagram-purple),
+            var(--instagram-pink),
+            var(--instagram-orange)
         );
 
     border-color: rgba(255, 255, 255, .35);
@@ -1620,4 +1659,151 @@ footer {
     .preview-details span {
         font-size: 10px;
     }
+}
+
+
+/* =====================================================
+   DOWNLOAD PROGRESS
+===================================================== */
+
+.download-buttons form {
+    position: relative;
+}
+
+
+/* Downloading button */
+
+.download-buttons button.is-downloading {
+    position: relative;
+    cursor: wait;
+    opacity: 0.92;
+}
+
+
+/* Spinner */
+
+.download-spinner {
+    width: 16px;
+    height: 16px;
+
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    vertical-align: middle;
+
+    animation: downloadSpinner 0.7s linear infinite;
+}
+
+
+@keyframes downloadSpinner {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* Disabled download buttons */
+
+.download-buttons button.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+
+/* Progress message */
+
+.download-progress-message {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: 14px;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    line-height: 1.4;
+
+    text-align: center;
+
+    animation: downloadMessageIn 0.25s ease-out;
+
+}
+
+
+/* Small animated status indicator */
+
+.download-status-dot {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+
+    flex-shrink: 0;
+
+    animation: downloadPulse 1.2s ease-in-out infinite;
+}
+
+
+@keyframes downloadPulse {
+
+    0%,
+    100% {
+        opacity: 0.35;
+        transform: scale(0.85);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}
+
+
+@keyframes downloadMessageIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* Download Another Video */
+
+.download-another-disabled {
+
+    opacity: 0.45;
+
+    pointer-events: none;
+
+    cursor: not-allowed;
+
 }

@@ -45,14 +45,15 @@
                 X
             </a>
 
+            <a href="{{ route('instagram.downloader') }}">
+                Instagram
+            </a>
+
             
             <a href="{{ route('youtube.downloader') }}">
                 Youtube
             </a>
 
-            <a href="#">
-                Instagram
-            </a>
 
             <a href="#">
                 API
@@ -88,17 +89,14 @@
         X
     </a>
 
+    <a href="{{ route('instagram.downloader') }}">
+        Instagram
+    </a>
+
     <a href="{{ route('youtube.downloader') }}">
         Youtube
     </a>
 
-    <a href="#">
-        Instagram
-    </a>
-
-    <a href="#">
-        API
-    </a>
 
     <a href="#">
         Contact
@@ -141,16 +139,16 @@
                 Quick Links
             </h4>
 
-            <a href="{{ route('home') }}">
-                Home
-            </a>
-
             <a href="{{ route('tiktok.downloader') }}">
                 TikTok Downloader
             </a>
 
             <a href="{{ route('x.downloader') }}">
                 X Downloader
+            </a>
+
+            <a href="{{ route('instagram.downloader') }}">
+                Instagram Downloader
             </a>
 
             <a href="{{ route('youtube.downloader') }}">
@@ -186,7 +184,7 @@
             </p>
 
             <p>
-                🚧 Instagram (Coming Soon)
+                ✅ Instagram 
             </p>
 
         </div>
@@ -197,7 +195,7 @@
 
     © {{ date('Y') }}
 
-    TikTok, X & Youtube Downloader.
+    TikTok, X, Instagram & Youtube Downloader.
 
     All Rights Reserved.
 

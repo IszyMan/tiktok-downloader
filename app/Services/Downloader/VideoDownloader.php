@@ -8,6 +8,7 @@ use App\Services\Downloader\DTO\VideoData;
 use App\Services\Downloader\Scrapers\TikTok\YtDlp\YtDlpService;
 use App\Services\Downloader\Scrapers\X\YtDlp\YtDlpXService;
 use App\Services\Downloader\Scrapers\YouTube\YtDlp\YtDlpYouTubeService;
+use App\Services\Downloader\Scrapers\Instagram\YtDlp\YtDlpInstagramService;
 
 class VideoDownloader
 {
@@ -15,6 +16,7 @@ class VideoDownloader
         private readonly YtDlpService $tikTokYtDlp,
         private readonly YtDlpXService $xYtDlp,
         private readonly YtDlpYouTubeService $youtubeYtDlp,
+        private readonly YtDlpInstagramService $instagramYtDlp,
     ) {
     }
 
@@ -46,6 +48,12 @@ class VideoDownloader
             ),
 
             'ytdlp-youtube' => $this->downloadWithYouTubeYtDlp(
+                $video,
+                $outputPath,
+                $type,
+            ),
+
+            'ytdlp-instagram' => $this->downloadWithInstagramYtDlp(
                 $video,
                 $outputPath,
                 $type,
@@ -145,6 +153,33 @@ class VideoDownloader
         $this->youtubeYtDlp->downloadVideo(
             url: $video->sourceUrl,
             outputPath: $outputPath,
+        );
+    }
+
+
+    /**
+     * Download Instagram using yt-dlp.
+     */
+    private function downloadWithInstagramYtDlp(
+        VideoData $video,
+        string $outputPath,
+        string $type,
+    ): void {
+
+        if ($type === 'mp3') {
+
+            $this->instagramYtDlp->downloadMp3(
+                url: $video->sourceUrl,
+                outputPath: $outputPath,
+            );
+
+            return;
+        }
+
+        $this->instagramYtDlp->downloadVideo(
+            url: $video->sourceUrl,
+            outputPath: $outputPath,
+            formatId: $video->downloads->formatId,
         );
     }
 
