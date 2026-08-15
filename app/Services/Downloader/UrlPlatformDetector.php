@@ -45,8 +45,16 @@ class UrlPlatformDetector
             return 'instagram';
         }
 
+        if (
+            $host === 'facebook.com' ||
+            str_ends_with($host, '.facebook.com') ||
+            $host === 'fb.watch'
+        ) {
+            return 'facebook';
+        }
+
         throw new RuntimeException(
-            'Unsupported URL. Please enter a TikTok or X video URL.'
+            'Unsupported URL. Please enter a supported video URL.'
         );
     }
 }

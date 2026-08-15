@@ -66,6 +66,15 @@
 
 
     /* =====================================================
+    FACEBOOK COLORS
+    ===================================================== */
+
+    --facebook-blue: #1877f2;
+    --facebook-dark: #0d65d9;
+    --facebook-light: #42a5f5;
+
+
+    /* =====================================================
        DEFAULT PLATFORM COLORS
     ===================================================== */
 
@@ -119,6 +128,14 @@
     --platform-button-text: #ffffff;
 }
 
+
+.theme-facebook {
+    --platform-primary: var(--facebook-blue);
+    --platform-secondary: var(--facebook-dark);
+    --platform-accent: var(--facebook-light);
+    --platform-button-text: #ffffff;
+}
+
 /* =========================================================
    PLATFORM THEMES
 ========================================================= */
@@ -148,6 +165,13 @@
     --platform-primary: var(--instagram-pink);
     --platform-secondary: var(--instagram-purple);
     --platform-accent: var(--instagram-orange);
+    --platform-button-text: #ffffff;
+}
+
+.platform-facebook {
+    --platform-primary: var(--facebook-blue);
+    --platform-secondary: var(--facebook-dark);
+    --platform-accent: var(--facebook-light);
     --platform-button-text: #ffffff;
 }
 
@@ -560,6 +584,18 @@ DOWNLOADER HERO
             var(--instagram-purple),
             var(--instagram-pink),
             var(--instagram-orange)
+        );
+
+    border-color: rgba(255, 255, 255, .35);
+}
+
+
+.platform-pill.platform-facebook {
+    background:
+        linear-gradient(
+            135deg,
+            var(--facebook-blue),
+            var(--facebook-dark)
         );
 
     border-color: rgba(255, 255, 255, .35);

@@ -58,6 +58,15 @@ class DownloadController extends Controller
         return view('instagram.downloader');
     }
 
+
+    /**
+     * Facebook-only downloader page.
+     */
+    public function facebook()
+    {
+        return view('facebook.downloader');
+    }
+
     /**
      * Preview or download a video.
      */
@@ -144,6 +153,16 @@ class DownloadController extends Controller
                             'Instagram URL detected. Please use our Instagram Downloader instead.',
                     ]);
             }
+
+            if ($detectedPlatform === 'facebook') {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'url' =>
+                            'Facebook URL detected. Please use our Facebook Downloader instead.',
+                    ]);
+            }
         }
 
         /*
@@ -182,6 +201,8 @@ class DownloadController extends Controller
                 'youtube' => 'youtube.downloader',
 
                 'instagram' => 'instagram.downloader',
+
+                'facebook' => 'facebook.downloader',
 
                 default => 'home',
             };

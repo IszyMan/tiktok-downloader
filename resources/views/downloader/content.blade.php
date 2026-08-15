@@ -20,6 +20,7 @@
     $isX = $platform === 'x';
     $isYouTube = $platform === 'youtube';
     $isInstagram = $platform === 'instagram';
+    $isFacebook = $platform === 'facebook';
 
 
     /*
@@ -54,6 +55,7 @@
     $videoIsTikTok = false;
     $videoIsYouTube = false;
     $videoIsInstagram = false;
+    $videoIsFacebook = false;
 
     if ($hasVideo) {
 
@@ -72,6 +74,11 @@
             ||
             ($video->extra['extractor'] ?? null) === 'instagram';
 
+        $videoIsFacebook =
+            ($video->provider ?? null) === 'ytdlp-facebook'
+            ||
+            ($video->extra['extractor'] ?? null) === 'facebook';    
+
         $videoIsTikTok =
             ($video->provider ?? null) === 'tikwm'
             ||
@@ -83,6 +90,7 @@
         $videoIsX => 'X Video',
         $videoIsYouTube => 'YouTube Video',
         $videoIsInstagram => 'Instagram Video',
+        $videoIsFacebook => 'Facebook Video',
         $videoIsTikTok => 'TikTok Video',
         default => 'Video',
     };
@@ -131,9 +139,13 @@
 
                         Instagram • Reels • Fast • HD Quality  
 
+                    @elseif($isFacebook)
+
+                        Facebook • Fast • HD Quality
+
                     @else
 
-                        TikTok • X • YouTube • Instagram • Fast • HD Quality
+                        TikTok • X • Instagram • Facebook • YouTube • Fast • HD Quality
 
                     @endif
 
@@ -215,12 +227,22 @@
 
                             </div>
 
+
+                        @elseif(str_contains($errorMessage, 'facebook url detected'))
+
+                            <div class="error-action">
+
+                                <a href="{{ route('facebook.downloader') }}">
+                                    Go to Facebook Downloader →
+                                </a>
+
+                            </div>
+
                         @endif
 
                     </div>
 
                 @endif
-
 
                 {{-- =================================================
                      DOWNLOAD FORM
@@ -267,50 +289,54 @@
 
 
                     @if($isUniversal || $isTikTok)
-
                         <a
                             href="{{ route('tiktok.downloader') }}"
                             class="platform-pill platform-tiktok"
                         >
                             TikTok
                         </a>
-
                     @endif
 
 
                     @if($isUniversal || $isX)
-
                         <a
                             href="{{ route('x.downloader') }}"
                             class="platform-pill platform-x"
                         >
                             X
                         </a>
-
                     @endif
-
-                    @if($isUniversal || $isYouTube)
-
-                        <a
-                            href="{{ route('youtube.downloader') }}"
-                            class="platform-pill platform-youtube"
-                        >
-                            YouTube
-                        </a>
-
-                    @endif
-
 
                     @if($isUniversal || $isInstagram)
-
                         <a
                             href="{{ route('instagram.downloader') }}"
                             class="platform-pill platform-instagram"
                         >
                             Instagram
                         </a>
-
                     @endif
+
+
+                    @if($isUniversal || $isFacebook)
+                        <a
+                            href="{{ route('facebook.downloader') }}"
+                            class="platform-pill platform-facebook"
+                        >
+                            Facebook
+                        </a>
+                    @endif
+
+                    @if($isUniversal || $isYouTube)
+                        <a
+                            href="{{ route('youtube.downloader') }}"
+                            class="platform-pill platform-youtube"
+                        >
+                            YouTube
+                        </a>
+                    @endif
+
+
+                    
 
                 </div>
 
@@ -344,6 +370,8 @@
                             platform-youtube
                         @elseif($videoIsInstagram)
                             platform-instagram
+                        @elseif($videoIsFacebook)
+                            platform-facebook    
                         @else
                             platform-tiktok
                         @endif"
@@ -532,6 +560,8 @@
                                     YouTube
                                 @elseif($videoIsInstagram)
                                     Instagram
+                                @elseif($videoIsFacebook)
+                                    Facebook    
                                 @else
                                     TikTok
                                 @endif
@@ -733,6 +763,43 @@
 
                                 </form>
 
+                            @elseif($videoIsFacebook)
+                            
+                                {{-- Facebook Video --}}
+                                <form
+                                    method="POST"
+                                    action="{{ route('download') }}"
+                                >
+
+                                    @csrf
+
+                                    <input
+                                        type="hidden"
+                                        name="url"
+                                        value="{{ $url }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="platform"
+                                        value="{{ $platform }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="hd"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn-primary"
+                                    >
+                                        ⬇ Download Facebook Video
+                                    </button>
+
+                                </form>    
+
                             @else
 
                                 {{-- TikTok Watermark --}}
@@ -813,19 +880,23 @@
 
                             {{-- Download Another --}}
 
-                            <a href="{{ $isTikTok
-                                ? route('tiktok.downloader')
-                                : ($isX
-                                    ? route('x.downloader')
-                                    : ($isYouTube
-                                        ? route('youtube.downloader')
-                                        : ($isInstagram
-                                            ? route('instagram.downloader')
-                                            : route('home')
+                            <a
+                                href="{{ $isTikTok
+                                    ? route('tiktok.downloader')
+                                    : ($isX
+                                        ? route('x.downloader')
+                                        : ($isYouTube
+                                            ? route('youtube.downloader')
+                                            : ($isInstagram
+                                                ? route('instagram.downloader')
+                                                : ($isFacebook
+                                                    ? route('facebook.downloader')
+                                                    : route('home')
+                                                )
+                                            )
                                         )
                                     )
-                                )
-                            }}"
+                                }}"
                                 class="btn-outline"
                             >
                                 Download Another Video
@@ -880,11 +951,15 @@
 
                         @elseif($isInstagram)
 
-                            Download Instagram videos in seconds.    
+                            Download Instagram videos in seconds.
+                            
+                        @elseif($isFacebook)
+
+                            Download Facebook videos in seconds.                            
 
                         @else
 
-                            Download TikTok, X and YouTube videos in seconds.
+                            Download TikTok, X, Instagram, Facebook and YouTube videos in seconds.
 
                         @endif
 
@@ -966,11 +1041,15 @@
 
             @elseif($isInstagram)
 
-                How to Download Instagram Videos    
+                How to Download Instagram Videos
+
+            @elseif($isFacebook)
+
+                How to Download Facebook Videos
 
             @else
 
-                How to Download TikTok, X, Instagram & YouTube Videos
+                How to Download TikTok, X, Instagram, Facebook & YouTube Videos
 
             @endif
 
@@ -1013,9 +1092,13 @@
 
                         Open Instagram and copy the video URL.    
 
+                    @elseif($isFacebook)
+
+                        Open Facebook and copy the video URL.
+
                     @else
 
-                        Open TikTok, X, Instagram or Youtube and copy the video URL.
+                        Open TikTok, X, Instagram, Facebook or Youtube and copy the video URL.
 
                     @endif
 
@@ -1096,13 +1179,13 @@
             <div class="faq-item">
 
                 <h3>
-                    Is the TikTok, X, Youtube and Instagram downloader free?
+                    Is the TikTok, X, YouTube, Instagram and Facebook downloader free?
                 </h3>
 
                 <p>
                     Yes. You can use our downloader to download
-                    supported TikTok, X, Youtube and Instagram videos without creating
-                    an account.
+                    supported TikTok, X, YouTube, Instagram and Facebook videos
+                    without creating an account.
                 </p>
 
             </div>
@@ -1115,7 +1198,7 @@
                 </h3>
 
                 <p>
-                    Yes. Paste a supported TikTok, X, YouTube or Instagram
+                    Yes. Paste a supported TikTok, X, YouTube, Instagram or Facebook
                     URL and the downloader will automatically detect the platform.
                 </p>
 
@@ -1312,6 +1395,50 @@
                 </p>
 
             </div>
+
+        @elseif($isFacebook)
+
+            <div class="faq-item">
+
+                <h3>
+                    Is the Facebook downloader free?
+                </h3>
+
+                <p>
+                    Yes. You can download supported public Facebook videos
+                    without creating an account.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I download Facebook videos in HD?
+                </h3>
+
+                <p>
+                    Yes. When a higher-quality video is available,
+                    the downloader selects the best available video
+                    and combines it with the available audio.
+                </p>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <h3>
+                    Can I use the Facebook downloader on my phone?
+                </h3>
+
+                <p>
+                    Yes. The Facebook downloader works on Android,
+                    iPhone, tablets and desktop browsers.
+                </p>
+
+            </div>    
 
 
         @endif

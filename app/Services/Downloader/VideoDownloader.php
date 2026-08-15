@@ -9,6 +9,7 @@ use App\Services\Downloader\Scrapers\TikTok\YtDlp\YtDlpService;
 use App\Services\Downloader\Scrapers\X\YtDlp\YtDlpXService;
 use App\Services\Downloader\Scrapers\YouTube\YtDlp\YtDlpYouTubeService;
 use App\Services\Downloader\Scrapers\Instagram\YtDlp\YtDlpInstagramService;
+use App\Services\Downloader\Scrapers\Facebook\YtDlp\YtDlpFacebookService;
 
 class VideoDownloader
 {
@@ -17,6 +18,7 @@ class VideoDownloader
         private readonly YtDlpXService $xYtDlp,
         private readonly YtDlpYouTubeService $youtubeYtDlp,
         private readonly YtDlpInstagramService $instagramYtDlp,
+        private readonly YtDlpFacebookService $facebookYtDlp,
     ) {
     }
 
@@ -54,6 +56,12 @@ class VideoDownloader
             ),
 
             'ytdlp-instagram' => $this->downloadWithInstagramYtDlp(
+                $video,
+                $outputPath,
+                $type,
+            ),
+
+            'ytdlp-facebook' => $this->downloadWithFacebookYtDlp(
                 $video,
                 $outputPath,
                 $type,
@@ -180,6 +188,28 @@ class VideoDownloader
             url: $video->sourceUrl,
             outputPath: $outputPath,
             formatId: $video->downloads->formatId,
+        );
+    }
+
+
+    /**
+     * Download Facebook using yt-dlp.
+     */
+    private function downloadWithFacebookYtDlp(
+        VideoData $video,
+        string $outputPath,
+        string $type,
+    ): void {
+
+        if ($type === 'mp3') {
+            throw new RuntimeException(
+                'MP3 downloads are not currently supported for Facebook.'
+            );
+        }
+
+        $this->facebookYtDlp->downloadVideo(
+            url: $video->sourceUrl,
+            outputPath: $outputPath,
         );
     }
 

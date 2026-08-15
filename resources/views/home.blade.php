@@ -1,23 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'Free Video Downloader | Download TikTok & X Videos')
+@section('title', __('home.meta_title'))
 
-@section('meta_description', 'Download TikTok and X videos quickly in HD quality with SaveTikVideo. Free online video downloader with no login, no installation and simple video downloads.')
+@section('meta_description', __('home.meta_description'))
 
 @section('canonical', url('/'))
 
 @section('content')
 
 @php
+
     $platform = 'universal';
 
-    $pageTitle = 'Free TikTok, X, Instagram  & Facebook Video Downloader';
+    $pageTitle = __('home.title');
 
-    $pageDescription =
-        'Download TikTok, X, Instagram and Facebook videos quickly in HD quality. No installation, no login and no complicated steps.';
+    $pageDescription = __('home.description');
 
-    $inputPlaceholder =
-        'Paste TikTok, X, Instagram or Facebook video link here...';
+    $inputPlaceholder = __('home.input_placeholder');
+
 @endphp
 
 @include('downloader.content')

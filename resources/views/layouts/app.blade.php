@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
 
@@ -47,6 +47,10 @@
 
             <a href="{{ route('instagram.downloader') }}">
                 Instagram
+            </a>
+
+            <a href="{{ route('facebook.downloader') }}">
+                Facebook
             </a>
 
             
@@ -134,6 +138,10 @@
         Instagram
     </a>
 
+    <a href="{{ route('facebook.downloader') }}">
+        Facebook
+    </a>
+
     <a href="{{ route('youtube.downloader') }}">
         Youtube
     </a>
@@ -217,8 +225,10 @@
                 {{ __('common.footer_description') }}
             </p>
 
+            <br><br>
+
             <p>
-                Current language:
+                {{ __('common.current_language') }}
                 {{ app()->getLocale() }}
             </p>
 
@@ -231,19 +241,23 @@
             </h4>
 
             <a href="{{ route('tiktok.downloader') }}">
-                TikTok Downloader
+                {{ __('common.tiktok_downloader') }}
             </a>
 
             <a href="{{ route('x.downloader') }}">
-                X Downloader
+                {{ __('common.x_downloader') }}
             </a>
 
             <a href="{{ route('instagram.downloader') }}">
-                Instagram Downloader
+                {{ __('common.instagram_downloader') }}
+            </a>
+
+            <a href="{{ route('facebook.downloader') }}">
+                Facebook Downloader
             </a>
 
             <a href="{{ route('youtube.downloader') }}">
-                Youtube
+                {{ __('common.youtube_downloader') }}
             </a>
 
             <a href="#">
@@ -278,6 +292,10 @@
                 ✅ Instagram 
             </p>
 
+            <p>
+                ✅ Facebook
+            </p>
+
         </div>
 
     </div>
@@ -286,9 +304,9 @@
 
     © {{ date('Y') }}
 
-    TikTok, X, Instagram & Youtube Downloader.
+    TikTok, X, Instagram & YouTube Downloader.
 
-    All Rights Reserved.
+    {{ __('common.all_rights_reserved') }}
 
 </div>
 
