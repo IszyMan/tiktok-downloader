@@ -32,7 +32,7 @@
             </span>
 
             <span>
-                Online Downloader
+                {{ __('common.site_name') }}
             </span>
         </a>
 
@@ -54,14 +54,55 @@
                 Youtube
             </a>
 
-
             <a href="#">
-                API
+                {{ __('common.contact') }}
             </a>
 
-            <a href="#">
-                Contact
-            </a>
+            <div class="language-switcher">
+
+                <button
+                    type="button"
+                    class="language-current"
+                >
+                    {{ strtoupper(app()->getLocale()) }}
+                    ▾
+                </button>
+
+                <div class="language-menu">
+
+                    <a
+                        href="{{ route('language.switch', 'en') }}"
+                    >
+                        🇬🇧 English
+                    </a>
+
+                    <a
+                        href="{{ route('language.switch', 'fr') }}"
+                    >
+                        🇫🇷 Français
+                    </a>
+
+                    <a
+                        href="{{ route('language.switch', 'es') }}"
+                    >
+                        🇪🇸 Español
+                    </a>
+
+                    <a
+                        href="{{ route('language.switch', 'de') }}"
+                    >
+                        🇩🇪 Deutsch
+                    </a>
+
+                    <a
+                        href="{{ route('language.switch', 'pt') }}"
+                    >
+                        🇵🇹 Português
+                    </a>
+
+                </div>
+
+            </div>
 
         </nav>
 
@@ -102,6 +143,52 @@
         Contact
     </a>
 
+    <div class="language-switcher">
+
+        <button
+            type="button"
+            class="language-current"
+        >
+            {{ strtoupper(app()->getLocale()) }}
+            ▾
+        </button>
+
+        <div class="language-menu">
+
+            <a
+                href="{{ route('language.switch', 'en') }}"
+            >
+                🇬🇧 English
+            </a>
+
+            <a
+                href="{{ route('language.switch', 'fr') }}"
+            >
+                🇫🇷 Français
+            </a>
+
+            <a
+                href="{{ route('language.switch', 'es') }}"
+            >
+                🇪🇸 Español
+            </a>
+
+            <a
+                href="{{ route('language.switch', 'de') }}"
+            >
+                🇩🇪 Deutsch
+            </a>
+
+            <a
+                href="{{ route('language.switch', 'pt') }}"
+            >
+                🇵🇹 Português
+            </a>
+
+        </div>
+
+    </div>
+
 </div>
 
 
@@ -123,12 +210,16 @@
         <div>
 
             <h3>
-                Online Video Downloader
+                {{ __('common.site_name') }}
             </h3>
 
             <p>
-                Download videos from supported platforms quickly and easily.
-                No login or installation required.
+                {{ __('common.footer_description') }}
+            </p>
+
+            <p>
+                Current language:
+                {{ app()->getLocale() }}
             </p>
 
         </div>
@@ -136,7 +227,7 @@
         <div>
 
             <h4>
-                Quick Links
+                {{ __('common.quick_links') }}
             </h4>
 
             <a href="{{ route('tiktok.downloader') }}">
@@ -156,15 +247,15 @@
             </a>
 
             <a href="#">
-                Privacy
+                {{ __('common.privacy') }}
             </a>
 
             <a href="#">
-                Terms
+                {{ __('common.terms') }}
             </a>
 
             <a href="#">
-                Contact
+                {{ __('common.contact') }}
             </a>
 
         </div>
@@ -172,7 +263,7 @@
         <div>
 
             <h4>
-                Supported Platforms
+                {{ __('common.supported_platforms') }}
             </h4>
 
             <p>
@@ -214,6 +305,85 @@ const menu=document.getElementById('mobileMenu');
 button.addEventListener('click',()=>{
 
     menu.classList.toggle('show');
+
+});
+
+</script>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Language dropdown
+    |--------------------------------------------------------------------------
+    */
+
+    const languageSwitchers =
+        document.querySelectorAll('.language-switcher');
+
+
+    languageSwitchers.forEach(function (switcher) {
+
+        const button =
+            switcher.querySelector('.language-current');
+
+        if (!button) {
+            return;
+        }
+
+
+        button.addEventListener('click', function (event) {
+
+            event.stopPropagation();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Close other language menus
+            |--------------------------------------------------------------------------
+            */
+
+            languageSwitchers.forEach(function (otherSwitcher) {
+
+                if (otherSwitcher !== switcher) {
+
+                    otherSwitcher.classList.remove('open');
+
+                }
+
+            });
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Toggle current menu
+            |--------------------------------------------------------------------------
+            */
+
+            switcher.classList.toggle('open');
+
+        });
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Close language menu when clicking outside
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener('click', function () {
+
+        languageSwitchers.forEach(function (switcher) {
+
+            switcher.classList.remove('open');
+
+        });
+
+    });
 
 });
 

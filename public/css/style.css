@@ -1807,3 +1807,46 @@ footer {
     cursor: not-allowed;
 
 }
+
+
+.language-switcher {
+    position: relative;
+}
+
+.language-current {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font: inherit;
+}
+
+.language-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 170px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    padding: 6px;
+    z-index: 1000;
+}
+
+.language-switcher.open .language-menu {
+    display: block;
+}
+
+.language-menu a {
+    display: block;
+    padding: 9px 12px;
+    text-decoration: none;
+    color: #111827;
+    border-radius: 7px;
+    white-space: nowrap;
+}
+
+.language-menu a:hover {
+    background: #f3f4f6;
+}
