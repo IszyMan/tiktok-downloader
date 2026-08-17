@@ -4,13 +4,6 @@
     |--------------------------------------------------------------------------
     | Downloader Page Configuration
     |--------------------------------------------------------------------------
-    |
-    | These values are supplied by the individual page:
-    |
-    | home.blade.php
-    | tiktok/downloader.blade.php
-    | x/downloader.blade.php
-    |
     */
 
     $platform = $platform ?? 'universal';
@@ -21,6 +14,145 @@
     $isYouTube = $platform === 'youtube';
     $isInstagram = $platform === 'instagram';
     $isFacebook = $platform === 'facebook';
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Current Locale
+    |--------------------------------------------------------------------------
+    */
+
+    $locale = app()->getLocale();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Download POST Route
+    |--------------------------------------------------------------------------
+    */
+
+    $downloadRoute = match ($platform) {
+
+        'tiktok' => $locale === 'en'
+            ? route('tiktok.download')
+            : route($locale . '.tiktok.download'),
+
+        'x' => $locale === 'en'
+            ? route('x.download')
+            : route($locale . '.x.download'),
+
+        'youtube' => $locale === 'en'
+            ? route('youtube.download')
+            : route($locale . '.youtube.download'),
+
+        'instagram' => $locale === 'en'
+            ? route('instagram.download')
+            : route($locale . '.instagram.download'),
+
+        'facebook' => $locale === 'en'
+            ? route('facebook.download')
+            : route($locale . '.facebook.download'),
+
+        default => $locale === 'en'
+            ? route('download')
+            : route($locale . '.download'),
+
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Downloader GET Routes
+    |--------------------------------------------------------------------------
+    */
+
+    $tiktokRoute = $locale === 'en'
+        ? route('tiktok.downloader')
+        : route($locale . '.tiktok.downloader');
+
+    $xRoute = $locale === 'en'
+        ? route('x.downloader')
+        : route($locale . '.x.downloader');
+
+    $youtubeRoute = $locale === 'en'
+        ? route('youtube.downloader')
+        : route($locale . '.youtube.downloader');
+
+    $instagramRoute = $locale === 'en'
+        ? route('instagram.downloader')
+        : route($locale . '.instagram.downloader');
+
+    $facebookRoute = $locale === 'en'
+        ? route('facebook.downloader')
+        : route($locale . '.facebook.downloader');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home Route
+    |--------------------------------------------------------------------------
+    */
+
+    $homeRoute = $locale === 'en'
+        ? route('home')
+        : route($locale . '.home');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Translation-Ready Page Content
+    |--------------------------------------------------------------------------
+    */
+
+    $pageTitle = match ($platform) {
+
+        'tiktok' => __('downloader.pages.tiktok.title'),
+
+        'x' => __('downloader.pages.x.title'),
+
+        'youtube' => __('downloader.pages.youtube.title'),
+
+        'instagram' => __('downloader.pages.instagram.title'),
+
+        'facebook' => __('downloader.pages.facebook.title'),
+
+        default => __('downloader.pages.universal.title'),
+
+    };
+
+
+    $pageDescription = match ($platform) {
+
+        'tiktok' => __('downloader.pages.tiktok.description'),
+
+        'x' => __('downloader.pages.x.description'),
+
+        'youtube' => __('downloader.pages.youtube.description'),
+
+        'instagram' => __('downloader.pages.instagram.description'),
+
+        'facebook' => __('downloader.pages.facebook.description'),
+
+        default => __('downloader.pages.universal.description'),
+
+    };
+
+
+    $inputPlaceholder = match ($platform) {
+
+        'tiktok' => __('downloader.input.tiktok'),
+
+        'x' => __('downloader.input.x'),
+
+        'youtube' => __('downloader.input.youtube'),
+
+        'instagram' => __('downloader.input.instagram'),
+
+        'facebook' => __('downloader.input.facebook'),
+
+        default => __('downloader.input.universal'),
+
+    };
 
 
     /*
@@ -46,9 +178,6 @@
     |--------------------------------------------------------------------------
     | Detect Actual Video Platform
     |--------------------------------------------------------------------------
-    |
-    | This is used only after a URL has been processed.
-    |
     */
 
     $videoIsX = false;
@@ -77,7 +206,7 @@
         $videoIsFacebook =
             ($video->provider ?? null) === 'ytdlp-facebook'
             ||
-            ($video->extra['extractor'] ?? null) === 'facebook';    
+            ($video->extra['extractor'] ?? null) === 'facebook';
 
         $videoIsTikTok =
             ($video->provider ?? null) === 'tikwm'
@@ -85,14 +214,78 @@
             ($video->extra['extractor'] ?? null) === 'tiktok';
     }
 
-    $previewPlatformName = match (true) {
 
-        $videoIsX => 'X Video',
-        $videoIsYouTube => 'YouTube Video',
-        $videoIsInstagram => 'Instagram Video',
-        $videoIsFacebook => 'Facebook Video',
-        $videoIsTikTok => 'TikTok Video',
-        default => 'Video',
+    /*
+    |--------------------------------------------------------------------------
+    | Preview Platform
+    |--------------------------------------------------------------------------
+    */
+
+    $previewPlatform = match (true) {
+
+        $videoIsX => 'x',
+
+        $videoIsYouTube => 'youtube',
+
+        $videoIsInstagram => 'instagram',
+
+        $videoIsFacebook => 'facebook',
+
+        $videoIsTikTok => 'tiktok',
+
+        default => 'universal',
+
+    };
+
+
+    $previewPlatformName = match ($previewPlatform) {
+
+        'x' => __('common.x'),
+
+        'youtube' => __('common.youtube'),
+
+        'instagram' => __('common.instagram'),
+
+        'facebook' => __('common.facebook'),
+
+        'tiktok' => __('common.tiktok'),
+
+        default => __('downloader.video'),
+
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Preview Badge
+    |--------------------------------------------------------------------------
+    */
+
+    $previewBadge = __('downloader.preview.ready', [
+        'platform' => $previewPlatformName,
+    ]);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Another Video Route
+    |--------------------------------------------------------------------------
+    */
+
+    $anotherVideoRoute = match ($platform) {
+
+        'tiktok' => $tiktokRoute,
+
+        'x' => $xRoute,
+
+        'youtube' => $youtubeRoute,
+
+        'instagram' => $instagramRoute,
+
+        'facebook' => $facebookRoute,
+
+        default => $homeRoute,
+
     };
 
 @endphp
@@ -125,27 +318,27 @@
 
                     @if($isTikTok)
 
-                        TikTok • No Watermark • Fast • HD
+                        {{ __('downloader.badges.tiktok') }}
 
                     @elseif($isX)
 
-                        X • Fast • HD Quality
+                        {{ __('downloader.badges.x') }}
 
                     @elseif($isYouTube)
 
-                        YouTube • Fast • HD Quality 
-                        
+                        {{ __('downloader.badges.youtube') }}
+
                     @elseif($isInstagram)
 
-                        Instagram • Reels • Fast • HD Quality  
+                        {{ __('downloader.badges.instagram') }}
 
                     @elseif($isFacebook)
 
-                        Facebook • Fast • HD Quality
+                        {{ __('downloader.badges.facebook') }}
 
                     @else
 
-                        TikTok • X • Instagram • Facebook • YouTube • Fast • HD Quality
+                        {{ __('downloader.badges.universal') }}
 
                     @endif
 
@@ -172,6 +365,10 @@
 
                 @if ($errors->any())
 
+                    @php
+                        $errorMessage = strtolower($errors->first());
+                    @endphp
+
                     <div class="error-box">
 
                         <div>
@@ -179,17 +376,12 @@
                         </div>
 
 
-                        @php
-                            $errorMessage = strtolower($errors->first());
-                        @endphp
-
-
                         @if(str_contains($errorMessage, 'x url detected'))
 
                             <div class="error-action">
 
-                                <a href="{{ route('x.downloader') }}">
-                                    Go to X Downloader →
+                                <a href="{{ $xRoute }}">
+                                    {{ __('downloader.errors.go_to_x') }} →
                                 </a>
 
                             </div>
@@ -199,8 +391,8 @@
 
                             <div class="error-action">
 
-                                <a href="{{ route('tiktok.downloader') }}">
-                                    Go to TikTok Downloader →
+                                <a href="{{ $tiktokRoute }}">
+                                    {{ __('downloader.errors.go_to_tiktok') }} →
                                 </a>
 
                             </div>
@@ -210,8 +402,8 @@
 
                             <div class="error-action">
 
-                                <a href="{{ route('youtube.downloader') }}">
-                                    Go to YouTube Downloader →
+                                <a href="{{ $youtubeRoute }}">
+                                    {{ __('downloader.errors.go_to_youtube') }} →
                                 </a>
 
                             </div>
@@ -221,8 +413,8 @@
 
                             <div class="error-action">
 
-                                <a href="{{ route('instagram.downloader') }}">
-                                    Go to Instagram Downloader →
+                                <a href="{{ $instagramRoute }}">
+                                    {{ __('downloader.errors.go_to_instagram') }} →
                                 </a>
 
                             </div>
@@ -232,8 +424,8 @@
 
                             <div class="error-action">
 
-                                <a href="{{ route('facebook.downloader') }}">
-                                    Go to Facebook Downloader →
+                                <a href="{{ $facebookRoute }}">
+                                    {{ __('downloader.errors.go_to_facebook') }} →
                                 </a>
 
                             </div>
@@ -244,12 +436,13 @@
 
                 @endif
 
+
                 {{-- =================================================
                      DOWNLOAD FORM
                 ================================================== --}}
 
                 <form
-                    action="{{ route('download') }}"
+                    action="{{ $downloadRoute }}"
                     method="POST"
                     class="download-form"
                 >
@@ -262,16 +455,43 @@
                         value="{{ $platform }}"
                     >
 
-                    <input
-                        type="url"
-                        name="url"
-                        value="{{ old('url') }}"
-                        placeholder="{{ $inputPlaceholder }}"
-                        required
+
+                    <div class="url-input-wrapper">
+
+                        <input
+                            type="url"
+                            id="download-url"
+                            name="url"
+                            value="{{ old('url') }}"
+                            placeholder="{{ $inputPlaceholder }}"
+                            autocomplete="url"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="paste-button"
+                            id="paste-url-button"
+                        >
+                            {{ __('downloader.paste') }}
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="download-submit"
+                        id="download-submit-button"
                     >
 
-                    <button type="submit">
-                        Download
+                        <span class="download-button-spinner"></span>
+
+                        <span class="download-button-text">
+                            {{ __('downloader.download') }}
+                        </span>
+
                     </button>
 
                 </form>
@@ -284,59 +504,68 @@
                 <div class="supported-platforms">
 
                     <span>
-                        Supports:
+                        {{ __('downloader.supports') }}:
                     </span>
 
 
                     @if($isUniversal || $isTikTok)
+
                         <a
-                            href="{{ route('tiktok.downloader') }}"
+                            href="{{ $tiktokRoute }}"
                             class="platform-pill platform-tiktok"
                         >
-                            TikTok
+                            {{ __('common.tiktok') }}
                         </a>
+
                     @endif
 
 
                     @if($isUniversal || $isX)
+
                         <a
-                            href="{{ route('x.downloader') }}"
+                            href="{{ $xRoute }}"
                             class="platform-pill platform-x"
                         >
-                            X
+                            {{ __('common.x') }}
                         </a>
+
                     @endif
 
+
                     @if($isUniversal || $isInstagram)
+
                         <a
-                            href="{{ route('instagram.downloader') }}"
+                            href="{{ $instagramRoute }}"
                             class="platform-pill platform-instagram"
                         >
-                            Instagram
+                            {{ __('common.instagram') }}
                         </a>
+
                     @endif
 
 
                     @if($isUniversal || $isFacebook)
+
                         <a
-                            href="{{ route('facebook.downloader') }}"
+                            href="{{ $facebookRoute }}"
                             class="platform-pill platform-facebook"
                         >
-                            Facebook
+                            {{ __('common.facebook') }}
                         </a>
+
                     @endif
+
 
                     @if($isUniversal || $isYouTube)
+
                         <a
-                            href="{{ route('youtube.downloader') }}"
+                            href="{{ $youtubeRoute }}"
                             class="platform-pill platform-youtube"
                         >
-                            YouTube
+                            {{ __('common.youtube') }}
                         </a>
+
                     @endif
-
-
-                    
 
                 </div>
 
@@ -348,13 +577,12 @@
             @else
 
                 <span class="hero-badge">
-                    {{ $previewPlatformName }} Ready
+                    {{ $previewBadge }}
                 </span>
 
 
                 <p class="preview-description">
-                    Your video has been detected.
-                    Preview it below and choose how you'd like to download it.
+                    {{ __('downloader.preview.description') }}
                 </p>
 
 
@@ -371,7 +599,7 @@
                         @elseif($videoIsInstagram)
                             platform-instagram
                         @elseif($videoIsFacebook)
-                            platform-facebook    
+                            platform-facebook
                         @else
                             platform-tiktok
                         @endif"
@@ -427,6 +655,7 @@
 
                                 @endif
 
+
                                 <div class="play-icon">
                                     ▶
                                 </div>
@@ -442,7 +671,9 @@
                                 {{-- Title --}}
 
                                 <h3 class="preview-title">
-                                    {{ $video->title ?: 'Video' }}
+
+                                    {{ $video->title ?: __('downloader.video') }}
+
                                 </h3>
 
 
@@ -457,21 +688,22 @@
                                             <img
                                                 class="author-avatar"
                                                 src="{{ $video->author->avatar }}"
-                                                alt="{{ $video->author->nickname ?? $video->author->username ?? 'Author' }}"
+                                                alt="{{ $video->author->nickname ?? $video->author->username ?? __('downloader.author') }}"
                                                 loading="lazy"
                                             >
 
                                         @endif
 
+
                                         <div>
 
                                             <strong>
+
                                                 {{ $video->author->nickname
                                                     ?? $video->author->username
-                                                    ?? 'Unknown creator' }}
-                                            </strong>
+                                                    ?? __('downloader.unknown_creator') }}
 
-                                            
+                                            </strong>
 
                                         </div>
 
@@ -495,6 +727,7 @@
 
                                         @endif
 
+
                                         @if(isset($video->statistics->likes))
 
                                             <span>
@@ -503,6 +736,7 @@
                                             </span>
 
                                         @endif
+
 
                                         @if(isset($video->statistics->shares))
 
@@ -531,8 +765,11 @@
                             @if(!empty($video->duration))
 
                                 <span>
+
                                     ⏱
+
                                     {{ gmdate('i:s', (int) $video->duration) }}
+
                                 </span>
 
                             @endif
@@ -544,27 +781,20 @@
                             )
 
                                 <span>
+
                                     🎥
+
                                     {{ $video->width }}
                                     ×
                                     {{ $video->height }}
+
                                 </span>
 
                             @endif
 
 
                             <span>
-                                @if($videoIsX)
-                                    X
-                                @elseif($videoIsYouTube)
-                                    YouTube
-                                @elseif($videoIsInstagram)
-                                    Instagram
-                                @elseif($videoIsFacebook)
-                                    Facebook    
-                                @else
-                                    TikTok
-                                @endif
+                                {{ $previewPlatformName }}
                             </span>
 
                         </div>
@@ -575,13 +805,17 @@
                         ================================================== --}}
 
                         <div class="download-buttons">
-                            @if($videoIsYouTube)
 
-                                {{-- YouTube Video --}}
+
+                            {{-- =================================================
+                                 YOUTUBE
+                            ================================================== --}}
+
+                            @if($videoIsYouTube)
 
                                 <form
                                     method="POST"
-                                    action="{{ route('download') }}"
+                                    action="{{ $downloadRoute }}"
                                 >
 
                                     @csrf
@@ -608,17 +842,15 @@
                                         type="submit"
                                         class="btn-primary"
                                     >
-                                        ⬇ Download Video (HD)
+                                        ⬇ {{ __('downloader.buttons.youtube_video') }}
                                     </button>
 
                                 </form>
 
 
-                                {{-- YouTube MP3 --}}
-
                                 <form
                                     method="POST"
-                                    action="{{ route('download') }}"
+                                    action="{{ $downloadRoute }}"
                                 >
 
                                     @csrf
@@ -645,18 +877,21 @@
                                         type="submit"
                                         class="btn-secondary"
                                     >
-                                        🎵 Download MP3
+                                        🎵 {{ __('downloader.buttons.youtube_mp3') }}
                                     </button>
 
                                 </form>
+
+
+                            {{-- =================================================
+                                 INSTAGRAM
+                            ================================================== --}}
 
                             @elseif($videoIsInstagram)
 
-                                {{-- Instagram Video --}}
-
                                 <form
                                     method="POST"
-                                    action="{{ route('download') }}"
+                                    action="{{ $downloadRoute }}"
                                 >
 
                                     @csrf
@@ -683,16 +918,15 @@
                                         type="submit"
                                         class="btn-secondary"
                                     >
-                                        ⬇ Download Instagram Video
+                                        ⬇ {{ __('downloader.buttons.instagram_video') }}
                                     </button>
 
                                 </form>
 
-                                {{-- Instagram Audio --}}
 
                                 <form
                                     method="POST"
-                                    action="{{ route('download') }}"
+                                    action="{{ $downloadRoute }}"
                                 >
 
                                     @csrf
@@ -719,56 +953,21 @@
                                         type="submit"
                                         class="btn-primary"
                                     >
-                                        🎵 Download Audio
-                                    </button>
-
-                                </form>    
-
-                            @elseif($videoIsX)
-
-                                {{-- X HD Download --}}
-
-                                <form
-                                    method="POST"
-                                    action="{{ route('download') }}"
-                                >
-
-                                    @csrf
-
-                                    <input
-                                        type="hidden"
-                                        name="url"
-                                        value="{{ $url }}"
-                                    >
-
-                                    <input
-                                        type="hidden"
-                                        name="platform"
-                                        value="{{ $platform }}"
-                                    >
-
-                                    <input
-                                        type="hidden"
-                                        name="action"
-                                        value="hd"
-                                    >
-                                    
-
-                                    <button
-                                        type="submit"
-                                        class="btn-primary"
-                                    >
-                                        ⬇ Download HD
+                                        🎵 {{ __('downloader.buttons.audio') }}
                                     </button>
 
                                 </form>
 
-                            @elseif($videoIsFacebook)
-                            
-                                {{-- Facebook Video --}}
+
+                            {{-- =================================================
+                                 X
+                            ================================================== --}}
+
+                            @elseif($videoIsX)
+
                                 <form
                                     method="POST"
-                                    action="{{ route('download') }}"
+                                    action="{{ $downloadRoute }}"
                                 >
 
                                     @csrf
@@ -795,18 +994,62 @@
                                         type="submit"
                                         class="btn-primary"
                                     >
-                                        ⬇ Download Facebook Video
+                                        ⬇ {{ __('downloader.buttons.x_hd') }}
                                     </button>
 
-                                </form>    
+                                </form>
 
-                            @else
 
-                                {{-- TikTok Watermark --}}
+                            {{-- =================================================
+                                 FACEBOOK
+                            ================================================== --}}
+
+                            @elseif($videoIsFacebook)
 
                                 <form
                                     method="POST"
-                                    action="{{ route('download') }}"
+                                    action="{{ $downloadRoute }}"
+                                >
+
+                                    @csrf
+
+                                    <input
+                                        type="hidden"
+                                        name="url"
+                                        value="{{ $url }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="platform"
+                                        value="{{ $platform }}"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="hd"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn-primary"
+                                    >
+                                        ⬇ {{ __('downloader.buttons.facebook_video') }}
+                                    </button>
+
+                                </form>
+
+
+                            {{-- =================================================
+                                 TIKTOK
+                            ================================================== --}}
+
+                            @else
+
+                                <form
+                                    method="POST"
+                                    action="{{ $downloadRoute }}"
                                 >
 
                                     @csrf
@@ -833,17 +1076,15 @@
                                         type="submit"
                                         class="btn-primary"
                                     >
-                                        ⬇ Download (Watermark)
+                                        ⬇ {{ __('downloader.buttons.watermark') }}
                                     </button>
 
                                 </form>
 
 
-                                {{-- TikTok HD / No Watermark --}}
-
                                 <form
                                     method="POST"
-                                    action="{{ route('download') }}"
+                                    action="{{ $downloadRoute }}"
                                 >
 
                                     @csrf
@@ -870,7 +1111,7 @@
                                         type="submit"
                                         class="btn-secondary"
                                     >
-                                        ⬇ Download HD (No Watermark)
+                                        ⬇ {{ __('downloader.buttons.no_watermark') }}
                                     </button>
 
                                 </form>
@@ -878,32 +1119,18 @@
                             @endif
 
 
-                            {{-- Download Another --}}
+                            {{-- =================================================
+                                 DOWNLOAD ANOTHER
+                            ================================================== --}}
 
                             <a
-                                href="{{ $isTikTok
-                                    ? route('tiktok.downloader')
-                                    : ($isX
-                                        ? route('x.downloader')
-                                        : ($isYouTube
-                                            ? route('youtube.downloader')
-                                            : ($isInstagram
-                                                ? route('instagram.downloader')
-                                                : ($isFacebook
-                                                    ? route('facebook.downloader')
-                                                    : route('home')
-                                                )
-                                            )
-                                        )
-                                    )
-                                }}"
+                                href="{{ $anotherVideoRoute }}"
                                 class="btn-outline"
                             >
-                                Download Another Video
+                                {{ __('downloader.download_another') }}
                             </a>
 
                         </div>
-
 
                     </div>
 
@@ -925,6 +1152,8 @@
         <div class="features-card">
 
 
+            {{-- Fast Download --}}
+
             <div class="feature-item">
 
                 <span>⚡</span>
@@ -932,34 +1161,34 @@
                 <div>
 
                     <h3>
-                        Fast Download
+                        {{ __('downloader.features.fast_title') }}
                     </h3>
 
                     <p>
 
                         @if($isTikTok)
 
-                            Download TikTok videos in seconds.
+                            {{ __('downloader.features.fast.tiktok') }}
 
                         @elseif($isX)
 
-                            Download X videos in seconds.
+                            {{ __('downloader.features.fast.x') }}
 
                         @elseif($isYouTube)
 
-                            Download YouTube videos in seconds.
+                            {{ __('downloader.features.fast.youtube') }}
 
                         @elseif($isInstagram)
 
-                            Download Instagram videos in seconds.
-                            
+                            {{ __('downloader.features.fast.instagram') }}
+
                         @elseif($isFacebook)
 
-                            Download Facebook videos in seconds.                            
+                            {{ __('downloader.features.fast.facebook') }}
 
                         @else
 
-                            Download TikTok, X, Instagram, Facebook and YouTube videos in seconds.
+                            {{ __('downloader.features.fast.universal') }}
 
                         @endif
 
@@ -973,6 +1202,8 @@
             <div class="divider"></div>
 
 
+            {{-- HD Quality --}}
+
             <div class="feature-item">
 
                 <span>🎥</span>
@@ -980,11 +1211,11 @@
                 <div>
 
                     <h3>
-                        HD Quality
+                        {{ __('downloader.features.quality_title') }}
                     </h3>
 
                     <p>
-                        Get the best available video quality.
+                        {{ __('downloader.features.quality_description') }}
                     </p>
 
                 </div>
@@ -995,6 +1226,8 @@
             <div class="divider"></div>
 
 
+            {{-- No Login --}}
+
             <div class="feature-item">
 
                 <span>🔒</span>
@@ -1002,17 +1235,16 @@
                 <div>
 
                     <h3>
-                        No Login
+                        {{ __('downloader.features.login_title') }}
                     </h3>
 
                     <p>
-                        Just paste your video link and download.
+                        {{ __('downloader.features.login_description') }}
                     </p>
 
                 </div>
 
             </div>
-
 
         </div>
 
@@ -1029,27 +1261,27 @@
 
             @if($isTikTok)
 
-                How to Download TikTok Videos
+                {{ __('downloader.how_it_works.title.tiktok') }}
 
             @elseif($isX)
 
-                How to Download X Videos
+                {{ __('downloader.how_it_works.title.x') }}
 
             @elseif($isYouTube)
 
-                How to Download YouTube Videos
+                {{ __('downloader.how_it_works.title.youtube') }}
 
             @elseif($isInstagram)
 
-                How to Download Instagram Videos
+                {{ __('downloader.how_it_works.title.instagram') }}
 
             @elseif($isFacebook)
 
-                How to Download Facebook Videos
+                {{ __('downloader.how_it_works.title.facebook') }}
 
             @else
 
-                How to Download TikTok, X, Instagram, Facebook & YouTube Videos
+                {{ __('downloader.how_it_works.title.universal') }}
 
             @endif
 
@@ -1057,12 +1289,14 @@
 
 
         <p class="section-description">
-            Download videos in just four simple steps.
+            {{ __('downloader.how_it_works.description') }}
         </p>
 
 
         <div class="steps">
 
+
+            {{-- Step 1 --}}
 
             <div class="step">
 
@@ -1071,34 +1305,34 @@
                 </div>
 
                 <h3>
-                    Copy Link
+                    {{ __('downloader.how_it_works.steps.copy_title') }}
                 </h3>
 
                 <p>
 
                     @if($isTikTok)
 
-                        Open TikTok and copy the video URL.
+                        {{ __('downloader.how_it_works.steps.copy.tiktok') }}
 
                     @elseif($isX)
 
-                        Open X and copy the video URL.
+                        {{ __('downloader.how_it_works.steps.copy.x') }}
 
                     @elseif($isYouTube)
 
-                        Open YouTube and copy the video URL.   
-                        
+                        {{ __('downloader.how_it_works.steps.copy.youtube') }}
+
                     @elseif($isInstagram)
 
-                        Open Instagram and copy the video URL.    
+                        {{ __('downloader.how_it_works.steps.copy.instagram') }}
 
                     @elseif($isFacebook)
 
-                        Open Facebook and copy the video URL.
+                        {{ __('downloader.how_it_works.steps.copy.facebook') }}
 
                     @else
 
-                        Open TikTok, X, Instagram, Facebook or Youtube and copy the video URL.
+                        {{ __('downloader.how_it_works.steps.copy.universal') }}
 
                     @endif
 
@@ -1107,6 +1341,8 @@
             </div>
 
 
+            {{-- Step 2 --}}
+
             <div class="step">
 
                 <div class="step-number">
@@ -1114,15 +1350,17 @@
                 </div>
 
                 <h3>
-                    Paste URL
+                    {{ __('downloader.how_it_works.steps.paste_title') }}
                 </h3>
 
                 <p>
-                    Paste the copied link into the downloader above.
+                    {{ __('downloader.how_it_works.steps.paste_description') }}
                 </p>
 
             </div>
 
+
+            {{-- Step 3 --}}
 
             <div class="step">
 
@@ -1131,15 +1369,17 @@
                 </div>
 
                 <h3>
-                    Download
+                    {{ __('downloader.how_it_works.steps.download_title') }}
                 </h3>
 
                 <p>
-                    Click the Download button and wait for your video to process.
+                    {{ __('downloader.how_it_works.steps.download_description') }}
                 </p>
 
             </div>
 
+
+            {{-- Step 4 --}}
 
             <div class="step">
 
@@ -1148,15 +1388,14 @@
                 </div>
 
                 <h3>
-                    Save Video
+                    {{ __('downloader.how_it_works.steps.save_title') }}
                 </h3>
 
                 <p>
-                    Save the downloaded video to your device.
+                    {{ __('downloader.how_it_works.steps.save_description') }}
                 </p>
 
             </div>
-
 
         </div>
 
@@ -1170,22 +1409,24 @@
     <section class="faq-section">
 
         <h2>
-            Frequently Asked Questions
+            {{ __('downloader.faq.title') }}
         </h2>
 
+
+        {{-- =========================================================
+             UNIVERSAL FAQ
+        ========================================================== --}}
 
         @if($isUniversal)
 
             <div class="faq-item">
 
                 <h3>
-                    Is the TikTok, X, YouTube, Instagram and Facebook downloader free?
+                    {{ __('downloader.faq.universal.free_question') }}
                 </h3>
 
                 <p>
-                    Yes. You can use our downloader to download
-                    supported TikTok, X, YouTube, Instagram and Facebook videos
-                    without creating an account.
+                    {{ __('downloader.faq.universal.free_answer') }}
                 </p>
 
             </div>
@@ -1194,12 +1435,11 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download videos from different platforms?
+                    {{ __('downloader.faq.universal.multiple_question') }}
                 </h3>
 
                 <p>
-                    Yes. Paste a supported TikTok, X, YouTube, Instagram or Facebook
-                    URL and the downloader will automatically detect the platform.
+                    {{ __('downloader.faq.universal.multiple_answer') }}
                 </p>
 
             </div>
@@ -1208,28 +1448,30 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download TikTok videos without a watermark?
+                    {{ __('downloader.faq.universal.watermark_question') }}
                 </h3>
 
                 <p>
-                    Yes. When a no-watermark version is available,
-                    you can choose the HD no-watermark download option.
+                    {{ __('downloader.faq.universal.watermark_answer') }}
                 </p>
 
             </div>
 
+
+        {{-- =========================================================
+             TIKTOK FAQ
+        ========================================================== --}}
 
         @elseif($isTikTok)
 
             <div class="faq-item">
 
                 <h3>
-                    Is the TikTok downloader free?
+                    {{ __('downloader.faq.tiktok.free_question') }}
                 </h3>
 
                 <p>
-                    Yes. You can download supported TikTok videos
-                    without creating an account.
+                    {{ __('downloader.faq.tiktok.free_answer') }}
                 </p>
 
             </div>
@@ -1238,12 +1480,11 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download TikTok videos without a watermark?
+                    {{ __('downloader.faq.tiktok.watermark_question') }}
                 </h3>
 
                 <p>
-                    Yes. When a no-watermark version is available,
-                    you can choose the HD no-watermark download option.
+                    {{ __('downloader.faq.tiktok.watermark_answer') }}
                 </p>
 
             </div>
@@ -1252,28 +1493,30 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I use the TikTok downloader on my phone?
+                    {{ __('downloader.faq.tiktok.phone_question') }}
                 </h3>
 
                 <p>
-                    Yes. It works on Android, iPhone, tablets and
-                    desktop browsers.
+                    {{ __('downloader.faq.tiktok.phone_answer') }}
                 </p>
 
             </div>
 
+
+        {{-- =========================================================
+             X FAQ
+        ========================================================== --}}
 
         @elseif($isX)
 
             <div class="faq-item">
 
                 <h3>
-                    Is the X downloader free?
+                    {{ __('downloader.faq.x.free_question') }}
                 </h3>
 
                 <p>
-                    Yes. You can download supported X videos without
-                    creating an account.
+                    {{ __('downloader.faq.x.free_answer') }}
                 </p>
 
             </div>
@@ -1282,12 +1525,11 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download videos from X on my phone?
+                    {{ __('downloader.faq.x.phone_question') }}
                 </h3>
 
                 <p>
-                    Yes. The X downloader works on Android, iPhone,
-                    tablets and desktop browsers.
+                    {{ __('downloader.faq.x.phone_answer') }}
                 </p>
 
             </div>
@@ -1296,29 +1538,30 @@
             <div class="faq-item">
 
                 <h3>
-                    Do I need to install anything?
+                    {{ __('downloader.faq.x.install_question') }}
                 </h3>
 
                 <p>
-                    No. Everything works directly in your web browser.
-                    No application or browser extension is required.
+                    {{ __('downloader.faq.x.install_answer') }}
                 </p>
 
             </div>
 
-       
+
+        {{-- =========================================================
+             YOUTUBE FAQ
+        ========================================================== --}}
 
         @elseif($isYouTube)
 
             <div class="faq-item">
 
                 <h3>
-                    Is the YouTube downloader free?
+                    {{ __('downloader.faq.youtube.free_question') }}
                 </h3>
 
                 <p>
-                    Yes. You can use the downloader to process
-                    supported YouTube videos without creating an account.
+                    {{ __('downloader.faq.youtube.free_answer') }}
                 </p>
 
             </div>
@@ -1327,13 +1570,11 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download YouTube videos in HD?
+                    {{ __('downloader.faq.youtube.hd_question') }}
                 </h3>
 
                 <p>
-                    When higher-quality video and audio streams are
-                    available, the downloader combines the best available
-                    video and audio into a single video file.
+                    {{ __('downloader.faq.youtube.hd_answer') }}
                 </p>
 
             </div>
@@ -1342,28 +1583,30 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download YouTube videos as MP3?
+                    {{ __('downloader.faq.youtube.mp3_question') }}
                 </h3>
 
                 <p>
-                    Yes. The YouTube downloader provides an MP3 option
-                    for extracting audio from supported videos.
+                    {{ __('downloader.faq.youtube.mp3_answer') }}
                 </p>
 
             </div>
 
+
+        {{-- =========================================================
+             INSTAGRAM FAQ
+        ========================================================== --}}
 
         @elseif($isInstagram)
 
             <div class="faq-item">
 
                 <h3>
-                    Is the Instagram downloader free?
+                    {{ __('downloader.faq.instagram.free_question') }}
                 </h3>
 
                 <p>
-                    Yes. You can download supported Instagram videos
-                    without creating an account.
+                    {{ __('downloader.faq.instagram.free_answer') }}
                 </p>
 
             </div>
@@ -1372,12 +1615,11 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download Instagram Reels?
+                    {{ __('downloader.faq.instagram.reels_question') }}
                 </h3>
 
                 <p>
-                    Yes. Paste a supported public Instagram Reel URL
-                    and the downloader will process the video.
+                    {{ __('downloader.faq.instagram.reels_answer') }}
                 </p>
 
             </div>
@@ -1386,27 +1628,30 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I use the Instagram downloader on my phone?
+                    {{ __('downloader.faq.instagram.phone_question') }}
                 </h3>
 
                 <p>
-                    Yes. The Instagram downloader works on Android,
-                    iPhone, tablets and desktop browsers.
+                    {{ __('downloader.faq.instagram.phone_answer') }}
                 </p>
 
             </div>
+
+
+        {{-- =========================================================
+             FACEBOOK FAQ
+        ========================================================== --}}
 
         @elseif($isFacebook)
 
             <div class="faq-item">
 
                 <h3>
-                    Is the Facebook downloader free?
+                    {{ __('downloader.faq.facebook.free_question') }}
                 </h3>
 
                 <p>
-                    Yes. You can download supported public Facebook videos
-                    without creating an account.
+                    {{ __('downloader.faq.facebook.free_answer') }}
                 </p>
 
             </div>
@@ -1415,13 +1660,11 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I download Facebook videos in HD?
+                    {{ __('downloader.faq.facebook.hd_question') }}
                 </h3>
 
                 <p>
-                    Yes. When a higher-quality video is available,
-                    the downloader selects the best available video
-                    and combines it with the available audio.
+                    {{ __('downloader.faq.facebook.hd_answer') }}
                 </p>
 
             </div>
@@ -1430,31 +1673,30 @@
             <div class="faq-item">
 
                 <h3>
-                    Can I use the Facebook downloader on my phone?
+                    {{ __('downloader.faq.facebook.phone_question') }}
                 </h3>
 
                 <p>
-                    Yes. The Facebook downloader works on Android,
-                    iPhone, tablets and desktop browsers.
+                    {{ __('downloader.faq.facebook.phone_answer') }}
                 </p>
 
-            </div>    
-
+            </div>
 
         @endif
 
 
-        {{-- Common FAQ --}}
+        {{-- =========================================================
+             COMMON FAQ
+        ========================================================== --}}
 
         <div class="faq-item">
 
             <h3>
-                Do I need to install anything?
+                {{ __('downloader.faq.common.install_question') }}
             </h3>
 
             <p>
-                No. Everything works directly in your web browser.
-                No application or browser extension is required.
+                {{ __('downloader.faq.common.install_answer') }}
             </p>
 
         </div>
@@ -1463,18 +1705,149 @@
         <div class="faq-item">
 
             <h3>
-                Can I use the downloader on my phone?
+                {{ __('downloader.faq.common.phone_question') }}
             </h3>
 
             <p>
-                Yes. The downloader works on Android, iPhone,
-                tablets desktop browsers and all devices.
+                {{ __('downloader.faq.common.phone_answer') }}
             </p>
 
         </div>
-
 
     </section>
 
+
+    {{-- =============================================================
+         PASTE BUTTON
+    ============================================================= --}}
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const pasteButton =
+                document.getElementById('paste-url-button');
+
+            const urlInput =
+                document.getElementById('download-url');
+
+
+            if (!pasteButton || !urlInput) {
+                return;
+            }
+
+
+            pasteButton.addEventListener('click', async function () {
+
+                try {
+
+                    const text =
+                        await navigator.clipboard.readText();
+
+
+                    if (!text) {
+                        return;
+                    }
+
+
+                    urlInput.value = text.trim();
+
+
+                    urlInput.dispatchEvent(
+                        new Event('input', {
+                            bubbles: true
+                        })
+                    );
+
+
+                    pasteButton.textContent =
+                        '✓ {{ __('downloader.pasted') }}';
+
+
+                    setTimeout(function () {
+
+                        pasteButton.textContent =
+                            '{{ __('downloader.paste') }}';
+
+                    }, 1500);
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Unable to read clipboard:',
+                        error
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Fallback
+                    |--------------------------------------------------------------------------
+                    */
+
+                    urlInput.focus();
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+
+    {{-- =============================================================
+         DOWNLOAD FORM LOADING STATE
+    ============================================================= --}}
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const downloadForm =
+                document.querySelector('.download-form');
+
+            const downloadButton =
+                document.getElementById(
+                    'download-submit-button'
+                );
+
+
+            if (!downloadForm || !downloadButton) {
+                return;
+            }
+
+
+            downloadForm.addEventListener(
+                'submit',
+                function () {
+
+                    downloadButton.disabled = true;
+
+                    downloadButton.classList.add(
+                        'is-loading'
+                    );
+
+
+                    const text =
+                        downloadButton.querySelector(
+                            '.download-button-text'
+                        );
+
+
+                    if (text) {
+
+                        text.textContent =
+                            '{{ __('downloader.loading') }}';
+
+                    }
+
+                }
+            );
+
+        });
+
+    </script>
 
 </div>

@@ -11,18 +11,18 @@ return [
     'site_name' => 'Online Video Downloader',
 
     'footer_description' =>
-        'Un descargador de videos en línea rápido y sencillo para plataformas de redes sociales compatibles.',
+        'Ein schneller und einfacher Online-Video-Downloader für unterstützte Social-Media-Plattformen.',
 
-    'current_language' => 'Idioma:',
+    'current_language' => 'Sprache:',
 
-    'all_rights_reserved' => 'Todos los derechos reservados.',
+    'all_rights_reserved' => 'Alle Rechte vorbehalten.',
 
     'site_description' =>
-    'Descargador de videos en línea gratuito para descargar videos de plataformas compatibles.',
+    'Kostenloser Online-Video-Downloader zum Herunterladen von Videos von unterstützten Plattformen.',
 
-    'change_language' => 'Cambiar idioma',
+    'change_language' => 'Sprache ändern',
 
-    'language' => 'Idioma',
+    'language' => 'Sprache',
 
 
     /*
@@ -33,11 +33,11 @@ return [
 
     'languages' => [
 
-        'en' => 'Inglés',
-        'es' => 'Español',
-        'fr' => 'Francés',
-        'de' => 'Alemán',
-        'pt' => 'Portugués',
+        'en' => 'Englisch',
+        'es' => 'Spanisch',
+        'fr' => 'Französisch',
+        'de' => 'Deutsch',
+        'pt' => 'Portugiesisch',
 
     ],
 
@@ -58,11 +58,11 @@ return [
 
     'youtube_downloader' => 'YouTube',
 
-    'contact' => 'Contacto',
+    'contact' => 'Kontakt',
 
-    'privacy' => 'Privacidad',
+    'privacy' => 'Datenschutz',
 
-    'terms' => 'Términos',
+    'terms' => 'Nutzungsbedingungen',
 
 
     /*
@@ -71,9 +71,9 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'menu_open' => 'Abrir menú',
+    'menu_open' => 'Menü öffnen',
 
-    'menu_close' => 'Cerrar menú',
+    'menu_close' => 'Menü schließen',
 
 
     /*
@@ -82,29 +82,29 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'paste' => 'Pegar',
+    'paste' => 'Einfügen',
 
-    'pasted' => 'Pegado',
+    'pasted' => 'Eingefügt',
 
-    'download' => 'Descargar',
+    'download' => 'Herunterladen',
 
-    'loading' => 'Cargando...',
+    'loading' => 'Wird geladen...',
 
-    'download_another' => 'Descargar otro video',
+    'download_another' => 'Weiteres Video herunterladen',
 
-    'download_hd' => 'Descargar en HD',
+    'download_hd' => 'HD herunterladen',
 
-    'download_audio' => 'Descargar audio',
+    'download_audio' => 'Audio herunterladen',
 
-    'download_mp3' => 'Descargar MP3',
+    'download_mp3' => 'MP3 herunterladen',
 
-    'download_video_hd' => 'Descargar video (HD)',
+    'download_video_hd' => 'Video herunterladen (HD)',
 
-    'download_video' => 'Descargar video',
+    'download_video' => 'Video herunterladen',
 
-    'download_watermark' => 'Descargar (con marca de agua)',
+    'download_watermark' => 'Herunterladen (mit Wasserzeichen)',
 
-    'download_hd_no_watermark' => 'Descargar HD (sin marca de agua)',
+    'download_hd_no_watermark' => 'HD herunterladen (ohne Wasserzeichen)',
 
 
     /*
@@ -117,22 +117,22 @@ return [
 
     'author' => 'Autor',
 
-    'unknown_creator' => 'Creador desconocido',
+    'unknown_creator' => 'Unbekannter Ersteller',
 
-    'video_ready' => ':platform listo',
+    'video_ready' => ':platform bereit',
 
     'video_detected' =>
-        'Tu video ha sido detectado. Obtén una vista previa a continuación y elige cómo quieres descargarlo.',
+        'Dein Video wurde erkannt. Sieh dir die Vorschau unten an und wähle aus, wie du es herunterladen möchtest.',
 
-    'views' => 'Visualizaciones',
+    'views' => 'Aufrufe',
 
-    'likes' => 'Me gusta',
+    'likes' => 'Gefällt mir',
 
-    'shares' => 'Compartidos',
+    'shares' => 'Geteilt',
 
-    'duration' => 'Duración',
+    'duration' => 'Dauer',
 
-    'resolution' => 'Resolución',
+    'resolution' => 'Auflösung',
 
 
     /*
@@ -141,20 +141,20 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'fast_download' => 'Descarga rápida',
+    'fast_download' => 'Schneller Download',
 
     'fast_download_description' =>
-        'Descarga videos rápida y fácilmente.',
+        'Videos schnell und einfach herunterladen.',
 
-    'hd_quality' => 'Calidad HD',
+    'hd_quality' => 'HD-Qualität',
 
     'hd_quality_description' =>
-        'Obtén la mejor calidad de video disponible.',
+        'Erhalte die bestmögliche verfügbare Videoqualität.',
 
-    'no_login' => 'Sin iniciar sesión',
+    'no_login' => 'Keine Anmeldung',
 
     'no_login_description' =>
-        'Solo pega el enlace del video y descárgalo.',
+        'Füge einfach deinen Videolink ein und lade ihn herunter.',
 
 
     /*
@@ -164,24 +164,24 @@ return [
     */
 
     'how_it_works_description' =>
-        'Descarga videos en solo cuatro sencillos pasos.',
+        'Videos in nur vier einfachen Schritten herunterladen.',
 
-    'step_copy_link' => 'Copiar enlace',
+    'step_copy_link' => 'Link kopieren',
 
-    'step_paste_url' => 'Pegar URL',
+    'step_paste_url' => 'URL einfügen',
 
-    'step_download' => 'Descargar',
+    'step_download' => 'Herunterladen',
 
-    'step_save_video' => 'Guardar video',
+    'step_save_video' => 'Video speichern',
 
     'step_paste_description' =>
-        'Pega el enlace copiado en el descargador de arriba.',
+        'Füge den kopierten Link in den Downloader oben ein.',
 
     'step_download_description' =>
-        'Haz clic en el botón Descargar y espera mientras se procesa el video.',
+        'Klicke auf die Schaltfläche Herunterladen und warte, bis dein Video verarbeitet wurde.',
 
     'step_save_description' =>
-        'Guarda el video descargado en tu dispositivo.',
+        'Speichere das heruntergeladene Video auf deinem Gerät.',
 
 
     /*
@@ -194,19 +194,19 @@ return [
 
         'no_installation' => [
 
-            'question' => '¿Necesito instalar algo?',
+            'question' => 'Muss ich etwas installieren?',
 
             'answer' =>
-                'No. Todo funciona directamente en tu navegador web. No necesitas ninguna aplicación ni extensión del navegador.',
+                'Nein. Alles funktioniert direkt in deinem Webbrowser. Du benötigst keine App und keine Browser-Erweiterung.',
 
         ],
 
         'mobile' => [
 
-            'question' => '¿Puedo usar el descargador en mi teléfono?',
+            'question' => 'Kann ich den Downloader auf meinem Smartphone verwenden?',
 
             'answer' =>
-                'Sí. El descargador funciona en Android, iPhone, tabletas y navegadores de escritorio.',
+                'Ja. Der Downloader funktioniert auf Android, iPhone, Tablets und Desktop-Browsern.',
 
         ],
 
@@ -219,15 +219,15 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'go_to_tiktok' => 'Ir al descargador de TikTok →',
+    'go_to_tiktok' => 'Zum TikTok Downloader →',
 
-    'go_to_x' => 'Ir al descargador de X →',
+    'go_to_x' => 'Zum X Downloader →',
 
-    'go_to_youtube' => 'Ir al descargador de YouTube →',
+    'go_to_youtube' => 'Zum YouTube Downloader →',
 
-    'go_to_instagram' => 'Ir al descargador de Instagram →',
+    'go_to_instagram' => 'Zum Instagram Downloader →',
 
-    'go_to_facebook' => 'Ir al descargador de Facebook →',
+    'go_to_facebook' => 'Zum Facebook Downloader →',
 
 
     /*
@@ -236,9 +236,9 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'supports' => 'Compatible con:',
+    'supports' => 'Unterstützt:',
 
-    'supported_platforms' => 'Plataformas compatibles',
+    'supported_platforms' => 'Unterstützte Plattformen',
 
 
     /*
@@ -247,6 +247,6 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'quick_links' => 'Enlaces rápidos',
+    'quick_links' => 'Schnellzugriff',
 
 ];

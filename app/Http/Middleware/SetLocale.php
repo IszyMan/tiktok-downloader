@@ -27,32 +27,76 @@ class SetLocale
         Closure $next
     ): Response {
 
-        $locale = session(
-            'locale',
-            config('app.locale', 'en')
-        );
-
         /*
         |--------------------------------------------------------------------------
-        | Make sure the selected language is supported.
+        | Get the first segment of the URL
         |--------------------------------------------------------------------------
+        |
+        | Examples:
+        |
+        | /
+        | /tiktok-downloader
+        | /de
+        | /de/tiktok-downloader
+        |
         */
 
-        if (! in_array(
-            $locale,
-            $this->supportedLocales,
-            true
-        )) {
-            $locale = 'en';
-        }
+        $urlLocale = $request->segment(1);
+
 
         /*
         |--------------------------------------------------------------------------
-        | Tell Laravel which language to use.
+        | Determine the active language
+        |--------------------------------------------------------------------------
+        |
+        | If the first URL segment is a supported language,
+        | use it.
+        |
+        | Otherwise the site is English.
+        |
+        */
+
+        if (
+            $urlLocale &&
+            in_array(
+                $urlLocale,
+                $this->supportedLocales,
+                true
+            )
+        ) {
+
+            $locale = $urlLocale;
+
+        } else {
+
+            $locale = 'en';
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Set Laravel application locale
         |--------------------------------------------------------------------------
         */
 
         app()->setLocale($locale);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Remember the language in the session
+        |--------------------------------------------------------------------------
+        |
+        | This is useful when moving around the site, but the URL
+        | remains the primary source of truth.
+        |
+        */
+
+        session([
+            'locale' => $locale,
+        ]);
+
 
         return $next($request);
     }

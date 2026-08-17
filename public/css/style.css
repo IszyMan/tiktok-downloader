@@ -245,6 +245,12 @@ header .container {
     justify-content: space-between;
 }
 
+.header-navigation {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
 .logo {
     display: flex;
     align-items: center;
@@ -477,6 +483,111 @@ DOWNLOADER HERO
 }
 
 
+/* =====================================================
+   PASTE BUTTON
+===================================================== */
+
+.url-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.url-input-wrapper input {
+    padding-right: 90px;
+}
+
+.paste-button {
+    position: absolute;
+
+    top: 50%;
+    right: 10px;
+
+    transform: translateY(-50%);
+
+    height: 40px;
+    padding: 0 14px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    background: #f9fafb;
+    color: #374151;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.paste-button:hover {
+    background: #ffffff;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+.download-form .paste-button:active {
+    transform: translateY(-50%);
+    box-shadow: none;
+}
+.download-form .paste-button:hover {
+    transform: translateY(-50%);
+    box-shadow: none;
+
+    background: #ffffff;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+
+/* =====================================================
+   DOWNLOAD BUTTON SPINNER
+===================================================== */
+
+.download-button-spinner {
+    display: none;
+
+    width: 16px;
+    height: 16px;
+
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+
+    border-radius: 50%;
+
+    animation: downloadButtonSpin 0.7s linear infinite;
+}
+
+.download-submit.is-loading {
+    cursor: wait;
+    opacity: 0.9;
+}
+
+.download-submit.is-loading .download-button-spinner {
+    display: inline-block;
+}
+
+.download-submit.is-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+@keyframes downloadButtonSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 
 /* =========================================================
@@ -1351,33 +1462,55 @@ footer {
    TABLET
 ========================================================= */
 
+/* =========================================================
+   TABLET
+========================================================= */
+
 @media (max-width: 992px) {
+
+    .header-navigation {
+        display: block;
+    }
 
     nav {
         display: none;
+    }
+
+    .language-switcher {
+        display: block;
     }
 
     .menu-button {
         display: block;
     }
 
+    /* Keep input + paste together */
     .download-form {
+        width: 100%;
+        display: flex;
         flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
     }
 
-    .download-form input,
-    .download-form button {
+    .url-input-wrapper {
+        width: 100%;
+        flex: none;
+    }
+
+    .download-form input {
         width: 100%;
         max-width: none;
     }
 
-    .download-form button {
+    .download-form > .download-submit,
+    .download-form button.download-submit {
         width: 100%;
+        max-width: none;
     }
 
     .features-card {
         flex-direction: column;
-
         text-align: center;
     }
 
@@ -1396,7 +1529,6 @@ footer {
 
     .footer-container {
         grid-template-columns: 1fr;
-
         text-align: center;
     }
 }
@@ -1415,11 +1547,10 @@ footer {
     .hero-inner {
         width: 100%;
         max-width: 100%;
-
         padding: 0;
     }
 
-     .hero-inner h1 {
+    .hero-inner h1 {
         font-size: 36px;
     }
 
@@ -1427,31 +1558,55 @@ footer {
         font-size: 17px;
     }
 
+
+    /* =====================================================
+       MOBILE DOWNLOAD FORM
+    ===================================================== */
+
     .download-form {
         width: 100%;
+        max-width: 100%;
 
         display: flex;
         flex-direction: column;
+        align-items: stretch;
 
         gap: 16px;
+
+        margin-top: 30px;
     }
 
-    .download-form input,
-    .download-form button {
+
+    /* Input + Paste button container */
+
+    .url-input-wrapper {
+        position: relative;
+
+        width: 100%;
+        min-width: 0;
+
+        flex: none;
+    }
+
+
+    /* URL input */
+
+    .url-input-wrapper input,
+    .download-form input {
         display: block;
 
         width: 100%;
         max-width: 100%;
-        min-width: 100%;
+        min-width: 0;
 
         height: 64px;
         min-height: 64px;
 
-        padding: 0 20px;
+        padding: 0 95px 0 20px;
 
         border-radius: 14px;
 
-        font-size: 17px;
+        font-size: 16px;
 
         box-sizing: border-box;
 
@@ -1459,13 +1614,61 @@ footer {
         appearance: none;
     }
 
-    .download-form button {
-        padding: 0;
+
+    /* Paste button stays INSIDE input on the right */
+
+    .paste-button {
+        position: absolute;
+
+        top: 50%;
+        right: 10px;
+
+        transform: translateY(-50%);
+
+        height: 40px;
+
+        padding: 0 13px;
+
+        border-radius: 8px;
+
+        font-size: 13px;
+
+        white-space: nowrap;
+
+        z-index: 5;
     }
+
+
+    /* Download button */
+
+    .download-form .download-submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+
+        height: 64px;
+        min-height: 64px;
+
+        padding: 0;
+
+        border-radius: 14px;
+
+        box-sizing: border-box;
+    }
+
 
     .supported-platforms {
         margin-top: 18px;
     }
+
+
+    /* =====================================================
+       REST OF YOUR MOBILE STYLES
+    ===================================================== */
 
     .features-section {
         padding: 45px 16px;
@@ -1482,26 +1685,20 @@ footer {
 
     .preview-description {
         padding: 0 5px;
-
         font-size: 14px;
-
         line-height: 1.5;
     }
 
     .preview-card {
         width: 100%;
         max-width: 100%;
-
         min-height: 0;
-
         margin-top: 20px;
-
         border-radius: 16px;
     }
 
     .preview-overlay {
         min-height: 0;
-
         padding: 15px;
     }
 
@@ -1516,36 +1713,30 @@ footer {
     .preview-thumbnail {
         width: 82px;
         height: 105px;
-
         flex-basis: 82px;
     }
 
     .play-icon {
         width: 34px;
         height: 34px;
-
         font-size: 14px;
     }
 
     .preview-title {
         margin-bottom: 9px;
-
         font-size: 15px;
         line-height: 1.35;
-
         -webkit-line-clamp: 3;
     }
 
     .author-row {
         gap: 8px;
-
         margin-bottom: 9px;
     }
 
     .author-avatar {
         width: 32px;
         height: 32px;
-
         flex-basis: 32px;
     }
 
@@ -1563,26 +1754,22 @@ footer {
 
     .video-stats span {
         padding: 5px 7px;
-
         font-size: 10px;
     }
 
     .preview-details {
         gap: 6px;
-
         margin-top: 15px;
         padding-top: 12px;
     }
 
     .preview-details span {
         padding: 5px 8px;
-
         font-size: 11px;
     }
 
     .download-buttons {
         gap: 8px;
-
         margin-top: 16px;
     }
 
@@ -1591,16 +1778,13 @@ footer {
     .download-buttons .btn-secondary,
     .download-buttons .btn-outline {
         min-height: 46px;
-
         border-radius: 10px;
-
         font-size: 14px;
     }
 
     .how-section,
     .how-it-works {
         width: calc(100% - 32px);
-
         margin: 65px auto;
     }
 
@@ -1625,30 +1809,24 @@ footer {
     .faq,
     .faq-section {
         width: calc(100% - 32px);
-
         margin: 60px auto;
     }
 
     .faq h2,
     .faq-section h2 {
         margin-bottom: 30px;
-
         font-size: 30px;
     }
 
     .faq-item {
         padding: 20px;
-
         border-radius: 14px;
     }
 
     .youtube-disclaimer {
         width: calc(100% - 32px);
-
         margin: 25px auto 55px;
-
         padding: 15px 16px;
-
         border-left-width: 3px;
     }
 
@@ -1661,7 +1839,6 @@ footer {
         padding: 50px 0;
     }
 }
-
 
 /* =========================================================
    VERY SMALL PHONES
@@ -1853,6 +2030,7 @@ footer {
     cursor: pointer;
     border: none;
     background: transparent;
+    color: #11eb85;
     font: inherit;
 }
 
@@ -1878,7 +2056,7 @@ footer {
     display: block;
     padding: 9px 12px;
     text-decoration: none;
-    color: #111827;
+    color: #02361e;
     border-radius: 7px;
     white-space: nowrap;
 }

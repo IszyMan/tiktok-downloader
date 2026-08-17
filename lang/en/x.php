@@ -2,39 +2,43 @@
 
 return [
 
-    'title' => 'X Video Downloader',
+    'meta_title' =>
+        'X Video Downloader | Download Videos from X',
+
+    'meta_description' =>
+        'Download videos from X quickly and easily in HD quality. Save supported public X videos directly to your device.',
+
+    'title' =>
+        'X Video Downloader',
 
     'description' =>
-        'Download videos from X quickly and easily in HD quality.',
+        'Download videos from X quickly in HD quality. No installation, no login and no complicated steps.',
+
+    'input_placeholder' =>
+        'Paste X video link here...',
 
     'badge' =>
         'X • Fast • HD Quality',
 
-    'placeholder' =>
-        'Paste X video URL here...',
-
     'how_title' =>
         'How to Download X Videos',
 
-    'copy_link_description' =>
+    'copy_description' =>
         'Open X and copy the video URL.',
 
-    'fast_description' =>
-        'Download X videos in seconds.',
-
-    'faq_free_title' =>
+    'faq_free_question' =>
         'Is the X downloader free?',
 
     'faq_free_answer' =>
         'Yes. You can download supported X videos without creating an account.',
 
-    'faq_mobile_title' =>
+    'faq_phone_question' =>
         'Can I download videos from X on my phone?',
 
-    'faq_mobile_answer' =>
+    'faq_phone_answer' =>
         'Yes. The X downloader works on Android, iPhone, tablets and desktop browsers.',
 
-    'faq_install_title' =>
+    'faq_install_question' =>
         'Do I need to install anything?',
 
     'faq_install_answer' =>

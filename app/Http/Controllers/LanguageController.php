@@ -28,7 +28,7 @@ class LanguageController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Make sure the requested language exists.
+        | Validate language
         |--------------------------------------------------------------------------
         */
 
@@ -37,13 +37,13 @@ class LanguageController extends Controller
             $this->supportedLocales,
             true
         )) {
-
             abort(404);
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | Store the visitor's language.
+        | Save language
         |--------------------------------------------------------------------------
         */
 
@@ -51,12 +51,106 @@ class LanguageController extends Controller
             'locale' => $locale,
         ]);
 
+
         /*
         |--------------------------------------------------------------------------
-        | Return to the previous page.
+        | Get current page
         |--------------------------------------------------------------------------
         */
 
-        return redirect()->back();
+        $referer = $request->headers->get('referer');
+
+
+        if (! $referer) {
+
+            return redirect(
+                $locale === 'en'
+                    ? url('/')
+                    : url('/' . $locale)
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Extract current path
+        |--------------------------------------------------------------------------
+        */
+
+        $path = parse_url(
+            $referer,
+            PHP_URL_PATH
+        );
+
+
+        $path = trim(
+            $path ?? '',
+            '/'
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Remove existing language prefix
+        |--------------------------------------------------------------------------
+        */
+
+        $segments = $path === ''
+            ? []
+            : explode('/', $path);
+
+
+        if (
+            ! empty($segments) &&
+            in_array(
+                $segments[0],
+                $this->supportedLocales,
+                true
+            )
+        ) {
+
+            array_shift($segments);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Rebuild equivalent URL
+        |--------------------------------------------------------------------------
+        */
+
+        $pagePath = implode(
+            '/',
+            $segments
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | English has no prefix
+        |--------------------------------------------------------------------------
+        */
+
+        if ($locale === 'en') {
+
+            return redirect(
+                $pagePath
+                    ? url('/' . $pagePath)
+                    : url('/')
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Other languages have prefix
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect(
+            $pagePath
+                ? url('/' . $locale . '/' . $pagePath)
+                : url('/' . $locale)
+        );
     }
 }
